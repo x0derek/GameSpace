@@ -106,11 +106,10 @@ body {
     position: relative;
 }
 
-/* LANGUAGE */
-#languagebox {
+/* LANGUAGE/DIFFICULTY */
+#languagebox, #difficultybox {
     position: absolute;
     top: 10px;
-    right: 0;
     width: auto;
     height: auto;
     gap: 6px;
@@ -118,6 +117,31 @@ body {
     flex-direction: column;
     background-color: #0f0a0f;
     z-index: 10;
+}
+
+#languagebox {
+    right: 0;
+}
+
+#difficultybox {
+    left: 0;
+}
+
+#easy{
+    border-color: #90EE90;
+}
+
+
+#normal{
+    border-color: #FFFF00;
+}
+
+#hard{
+    border-color: #FFA500;
+}
+
+#insane{
+    border-color: #FF0000;
 }
 
 .hidden {
@@ -229,6 +253,18 @@ body {
 
 .colorInput:focus {
     border-color: #f89af8;
+}
+
+.r{
+    border-color: #ff0000;
+}
+
+.g{
+    border-color: #adff2f;
+}
+
+.b{
+    border-color: #0066ff;
 }
 
 #submit,
@@ -368,7 +404,7 @@ body {
         max-height: 300px;
     }
 
-    #languagebox {
+    #languagebox, #difficultybox {
         position: static;
         flex-direction: row;
         flex-wrap: wrap;

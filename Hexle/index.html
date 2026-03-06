@@ -50,6 +50,13 @@ by the Free Software Foundation, either version 3 of the License, or
 
         <!-- GAME -->
         <div id="game">
+            <div id="difficultybox">
+                <button id="difficultyBtn" class="language">NORMAL</button>
+                <button id="easy" class="language hidden">EASY</button>
+                <button id="normal" class="language hidden">NORMAL</button>
+                <button id="hard" class="language hidden">HARD</button>
+                <button id="insane" class="language hidden">INSANE</button>
+            </div>
             <div id="languagebox">
                 <button id="language" class="language">ENG</button>
                 <button id="eng" class="language hidden">ENG</button>
@@ -64,12 +71,12 @@ by the Free Software Foundation, either version 3 of the License, or
                     <span id="info">Guess The Color</span>
                     <div id="attemptsLeft"></div>
                     <div id="inputContainer">
-                        <input type="text" class="colorInput" maxlength="1" pattern="[0-9A-Fa-f]">
-                        <input type="text" class="colorInput" maxlength="1" pattern="[0-9A-Fa-f]">
-                        <input type="text" class="colorInput" maxlength="1" pattern="[0-9A-Fa-f]">
-                        <input type="text" class="colorInput" maxlength="1" pattern="[0-9A-Fa-f]">
-                        <input type="text" class="colorInput" maxlength="1" pattern="[0-9A-Fa-f]">
-                        <input type="text" class="colorInput" maxlength="1" pattern="[0-9A-Fa-f]">
+                        <input type="text" class="colorInput r" maxlength="1" pattern="[0-9A-Fa-f]">
+                        <input type="text" class="colorInput r" maxlength="1" pattern="[0-9A-Fa-f]">
+                        <input type="text" class="colorInput g" maxlength="1" pattern="[0-9A-Fa-f]">
+                        <input type="text" class="colorInput g" maxlength="1" pattern="[0-9A-Fa-f]">
+                        <input type="text" class="colorInput b" maxlength="1" pattern="[0-9A-Fa-f]">
+                        <input type="text" class="colorInput b" maxlength="1" pattern="[0-9A-Fa-f]">
                     </div>
                     <input type="button" value="Submit" id="submit">
                     <input type="button" value="Play Again" id="NewGame" style="display:none;">
@@ -86,7 +93,8 @@ by the Free Software Foundation, either version 3 of the License, or
     </div>
 
     <script>
-        const MAX_ATTEMPTS = 5;
+        const MAX_ATTEMPTS = 10;
+        let MAX_ATTEMPTS_CURRENT = 10;
 
         let targetColor = '';
         let attempts = 0;
@@ -106,7 +114,7 @@ by the Free Software Foundation, either version 3 of the License, or
         function updateAttemptsDisplay() {
             const dots = document.getElementById('attemptsLeft');
             dots.innerHTML = '';
-            for (let i = 0; i < MAX_ATTEMPTS; i++) {
+            for (let i = 0; i < MAX_ATTEMPTS_CURRENT; i++) {
                 const dot = document.createElement('span');
                 dot.className = 'attemptDot' + (i < attempts ? ' attemptDotUsed' : '');
                 dots.appendChild(dot);
@@ -311,18 +319,18 @@ by the Free Software Foundation, either version 3 of the License, or
                 }
                 addGuessToHistory(userGuess, targetHex, attempts, true);
                 endGame(true);
-            } else if (attempts >= MAX_ATTEMPTS) {
+            } else if (attempts >= MAX_ATTEMPTS_CURRENT) {
                 addGuessToHistory(userGuess, targetHex, attempts, false);
                 endGame(false);
             } else {
                 if(currentLanguage === 'eng') {
-                    document.getElementById('info').textContent = `Incorrect. ${MAX_ATTEMPTS - attempts} attempt${MAX_ATTEMPTS - attempts > 1 ? 's' : ''} left!`;
+                    document.getElementById('info').textContent = `Incorrect. ${MAX_ATTEMPTS_CURRENT - attempts} attempt${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 's' : ''} left!`;
                 } else if (currentLanguage === 'esp') {
-                    document.getElementById('info').textContent = `Incorrecto. ¡${MAX_ATTEMPTS - attempts} intento${MAX_ATTEMPTS - attempts > 1 ? 's' : ''} restante!`;
+                    document.getElementById('info').textContent = `Incorrecto. ¡${MAX_ATTEMPTS_CURRENT - attempts} intento${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 's' : ''} restante!`;
                 } else if (currentLanguage === 'pl') {
-                    document.getElementById('info').textContent = `Niepoprawnie. Pozostało ${MAX_ATTEMPTS - attempts} prób${MAX_ATTEMPTS - attempts > 1 ? 'y' : ''}!`;
+                    document.getElementById('info').textContent = `Niepoprawnie. Pozostało ${MAX_ATTEMPTS_CURRENT - attempts} prób${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 'y' : ''}!`;
                 } else if (currentLanguage === 'ger') {
-                    document.getElementById('info').textContent = `Falsch. Noch ${MAX_ATTEMPTS - attempts} Versuch${MAX_ATTEMPTS - attempts > 1 ? 'e' : ''} übrig!`;
+                    document.getElementById('info').textContent = `Falsch. Noch ${MAX_ATTEMPTS_CURRENT - attempts} Versuch${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 'e' : ''} übrig!`;
                 }
                 addGuessToHistory(userGuess, targetHex, attempts, false);
 
@@ -338,7 +346,7 @@ by the Free Software Foundation, either version 3 of the License, or
 
         document.getElementById('NewGame').addEventListener('click', startGame);
 
-        const languageButtons = document.getElementsByClassName('language');
+        const languageButtons = document.querySelectorAll('#languagebox .language');
         const info = document.getElementById('info');
         const languagebox = document.getElementById('languagebox');
         const languageButton = document.getElementById('language');
@@ -383,6 +391,63 @@ by the Free Software Foundation, either version 3 of the License, or
         });
 
         setLanguage('eng');
+
+        // DIFFICULTY
+        const difficultySettings = {
+            easy:       { attempts: 10, label: 'EASY' },
+            normal:     { attempts: 6, label: 'NORMAL' },
+            hard:       { attempts: 4,  label: 'HARD' },
+            insane: { attempts: 2, label: "INSANE" }
+        };
+        let currentDifficulty = 'normal';
+
+        const difficultyBtn = document.getElementById('difficultyBtn');
+        const difficultybox = document.getElementById('difficultybox');
+        const difficultyOptionIds = ['easy', 'normal', 'hard', 'insane'];
+
+        function hideDifficulties() {
+            difficultyOptionIds.forEach(id => {
+                const btn = document.getElementById(id);
+                btn.classList.add('hidden');
+                btn.disabled = true;
+            });
+        }
+
+        difficultyBtn.addEventListener('mouseover', function() {
+            difficultyOptionIds.forEach(id => {
+                const btn = document.getElementById(id);
+                if (id === currentDifficulty) {
+                    btn.classList.add('hidden');
+                    btn.disabled = true;
+                } else {
+                    btn.classList.remove('hidden');
+                    btn.disabled = false;
+                }
+            });
+        });
+
+        difficultybox.addEventListener('mouseleave', hideDifficulties);
+
+        const difficultyColors = {
+            easy:   '#90EE90',
+            normal: '#FFFF00',
+            hard:   '#FFA500',
+            insane: '#FF0000'
+        };
+
+        difficultyOptionIds.forEach(id => {
+            document.getElementById(id).addEventListener('click', () => {
+                currentDifficulty = id;
+                MAX_ATTEMPTS_CURRENT = difficultySettings[id].attempts;
+                difficultyBtn.textContent = difficultySettings[id].label;
+                difficultyBtn.style.borderColor = difficultyColors[id];
+                hideDifficulties();
+                startGame();
+            });
+        });
+
+        hideDifficulties();
+        difficultyBtn.style.borderColor = difficultyColors[currentDifficulty];
         startGame();
     </script>
 </body>
