@@ -1,73 +1,152 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>💩PoppyClicker💩</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>💩 Poppy Clicker</title>
+<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <section id="Money">0</section>
-    <section id="CLicker">
-        <button class="Rotate" id="Button">💩</button>
-    </section>
-    <section id="Upgrade_board">
-        <!-- Upgrade 1 -->
-        <div>
-            <div id="Up1_Cena">Auto Clicker - 1</div>
-            <button id="Up1">Buy</button>
-        <div>
-        <!-- Upgrade 2 -->
-        <div>
-            <div id="Up2_Cena">Podtarcie - 10</div>
-            <button id="Up2">Buy</button>
-        <div>
-    </section>
+
+<div class="topBar">
+🧻 Kupy: <span id="Money">0</span>
+</div>
+
+<div class="game">
+
+<div class="leftPanel">
+
+<div id="orbitContainer">
+
+<button id="Button">💩</button>
+
+</div>
+
+</div>
+
+<div class="shopPanel">
+
+<h2>🧻 Sklep</h2>
+
+<div class="upgrade">
+<span id="Up1_Cena">🚽 Auto Kupa - 20</span>
+<button id="Up1">Kup</button>
+</div>
+
+<div class="upgrade">
+<span id="Up2_Cena">🧻 Mega Podtarcie - 50</span>
+<button id="Up2">Kup</button>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let Money = 0
+let Up1_Price = 20
+let Up2_Price = 50
+
+let multy = 1
+let auto = 0
+
+const moneyText = document.getElementById("Money")
+const button = document.getElementById("Button")
+
+function update(){
+moneyText.textContent = Money
+}
+
+/* kliknięcie */
+
+button.onclick = () => {
+
+Money += multy
+update()
+
+button.classList.add("pop")
+
+setTimeout(()=>{
+button.classList.remove("pop")
+},100)
+
+}
+
+/* spawn rolki */
+
+function spawnToilet(){
+
+const tp = document.createElement("div")
+
+tp.className = "tp"
+tp.innerText = "🧻"
+
+const angle = Math.random() * 360
+
+tp.style.animationDelay = (Math.random()*2)+"s"
+tp.style.transform = `rotate(${angle}deg) translateX(140px)`
+
+document.getElementById("orbitContainer").appendChild(tp)
+
+}
+
+/* upgrade auto */
+
+document.getElementById("Up1").onclick = () => {
+
+if(Money >= Up1_Price){
+
+Money -= Up1_Price
+auto++
+
+spawnToilet()
+
+Up1_Price = Math.floor(Up1_Price * 1.6)
+
+document.getElementById("Up1_Cena").innerText =
+"🚽 Auto Kupa - " + Up1_Price
+
+update()
+
+}else{
+alert("Nie stać cię")
+}
+
+}
+
+/* upgrade multiplikatora */
+
+document.getElementById("Up2").onclick = () => {
+
+if(Money >= Up2_Price){
+
+Money -= Up2_Price
+multy++
+
+Up2_Price = Math.floor(Up2_Price * 2)
+
+document.getElementById("Up2_Cena").innerText =
+"🧻 Mega Podtarcie - " + Up2_Price
+
+update()
+
+}else{
+alert("Nie stać cię")
+}
+
+}
+
+/* auto click */
+
+setInterval(()=>{
+
+Money += auto * multy
+update()
+
+},1000)
+
+</script>
+
 </body>
-    <script>
-        let Money = 0
-        let Up1_Price = 1
-        let Up2_Price = 10
-        let multy = 1
-        let Fast = 1
-        
-        button = document.getElementById("Button").addEventListener("click", function(){
-            Money= Money + (1*multy);
-            document.getElementById("Money").textContent = Money;
-        });
-        document.getElementById("Up1").addEventListener("click", function(){
-            if(Money >= Up1_Price){
-                Money = Money - Up1_Price
-                document.getElementById("Money").textContent = Money;
-                Up1_Price=Up1_Price*2
-                document.getElementById("Up1_Cena").innerText = "Auto Clicker - " + Up1_Price
-                auto = true
-            }
-            else{
-                alert("Niestać cię")
-            }
-        });
-
-        document.getElementById("Up2").addEventListener("click", function(){
-            if(Money >= Up2_Price){
-                Money = Money - Up2_Price
-                document.getElementById("Money").textContent = Money;
-                Up2_Price=Up2_Price*2
-                multy += 1
-                document.getElementById("Up2_Cena").innerText = "Podtarcie - " + Up2_Price
-            }
-            else{
-                alert("Niestać cię")
-            }
-        });
-
-        while(true){
-            if(auto == true){
-                setInterval(function(){
-                    Money= Money + (1*multy)
-                    document.getElementById("Money").textContent = Money;
-                }, 1000 / Fast)
-            }
-        }
-    </script>
 </html>
