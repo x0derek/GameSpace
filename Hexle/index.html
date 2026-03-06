@@ -42,16 +42,16 @@ by the Free Software Foundation, either version 3 of the License, or
                 <button class="key" id="f" disabled>F</button>
             </div>
             <div class="keyLegend">
-                <div class="legendItem"><span class="legendDot" style="background:#90EE90;"></span> Correct position</div>
-                <div class="legendItem"><span class="legendDot" style="background:#FFFF00;"></span> Wrong position</div>
-                <div class="legendItem"><span class="legendDot" style="background:#D3D3D3;"></span> Not in color</div>
+                <div class="legendItem"><span class="legendDot" style="background:#90EE90;"></span> <span id="correctPosition">Correct position</span></div>
+                <div class="legendItem"><span class="legendDot" style="background:#FFFF00;"></span> <span id="wrongPosition">Wrong position</span></div>
+                <div class="legendItem"><span class="legendDot" style="background:#D3D3D3;"></span> <span id="notInColor">Not in color</span></div>
             </div>
         </div>
 
         <!-- GAME -->
         <div id="game">
             <div id="languagebox">
-                <button id="language" class="language">LANGUAGE</button>
+                <button id="language" class="language">ENG</button>
                 <button id="eng" class="language hidden">ENG</button>
                 <button id="esp" class="language hidden">ESP</button>
                 <button id="pl" class="language hidden">PL</button>
@@ -221,10 +221,10 @@ by the Free Software Foundation, either version 3 of the License, or
         });
 
         const translations = {
-            eng: { info: 'Guess The Color', name: 'ENG' },
-            esp: { info: 'Adivina el color', name: 'ESP' },
-            pl: { info: 'Zgadnij kolor', name: 'PL' },
-            ger: { info: 'Errate die Farbe', name: 'GER' }
+            eng: { info: 'Guess The Color', name: 'ENG', button: 'Guess', keybrd: 'Keyboard', guesses: 'Guesses', green: 'Correct position', yellow: 'Wrong position', gray: 'Not in color' },
+            esp: { info: 'Adivina el color', name: 'ESP', button: 'Adivinar', keybrd: 'Teclado', guesses: 'Intentos', green: 'Posición correcta', yellow: 'Posición incorrecta', gray: 'No en el color' },
+            pl: { info: 'Zgadnij kolor', name: 'PL', button: 'Zgadnij', keybrd: 'Klawiatura', guesses: 'Próby', green: 'Poprawna pozycja', yellow: 'Błędna pozycja', gray: 'Nie w kolorze' },
+            ger: { info: 'Errate die Farbe', name: 'GER', button: 'Erraten', keybrd: 'Tastatur', guesses: 'Versuche', green: 'Richtige Position', yellow: 'Falsche Position', gray: 'Nicht in Farbe' }
         };
 
         function addGuessToHistory(userGuess, targetHex, attemptNum, isCorrect) {
@@ -270,15 +270,25 @@ by the Free Software Foundation, either version 3 of the License, or
         }
 
         document.getElementById('submit').addEventListener('click', function() {
-            showInputColors = true;
-            updateInputColors();
 
             let userGuess = Array.from(inputs).map(input => input.value.toUpperCase()).join('');
 
             if (userGuess.length < 6) {
-                document.getElementById('info').textContent = 'Please fill all fields!';
+                if(currentLanguage === 'eng') {
+                    document.getElementById('info').textContent = 'Please fill all fields!';
+                } else if (currentLanguage === 'esp') {
+                    document.getElementById('info').textContent = '¡Por favor, completa todos los campos!';
+                } else if (currentLanguage === 'pl') {
+                    document.getElementById('info').textContent = 'Proszę wypełnić wszystkie pola!';
+                } else if (currentLanguage === 'ger') {
+                    document.getElementById('info').textContent = 'Bitte füllen Sie alle Felder aus!';
+                }
                 return;
             }
+
+            showInputColors = true;
+            updateInputColors();
+
 
             userGuess = '#' + userGuess;
             attempts++;
@@ -290,14 +300,30 @@ by the Free Software Foundation, either version 3 of the License, or
             updateKeyboard(userHex, targetHex);
 
             if (userGuess === targetColor) {
-                document.getElementById('info').textContent = `Correct in ${attempts} attempt${attempts > 1 ? 's' : ''}!`;
+                if(currentLanguage === 'eng') {
+                    document.getElementById('info').textContent = `Correct in ${attempts} attempt${attempts > 1 ? 's' : ''}!`;
+                } else if (currentLanguage === 'esp') {
+                    document.getElementById('info').textContent = `¡Correcto en ${attempts} intento${attempts > 1 ? 's' : ''}!`;
+                } else if (currentLanguage === 'pl') {
+                    document.getElementById('info').textContent = `Poprawnie w ${attempts} prób${attempts > 1 ? 'ach' : 'ie'}!`;
+                } else if (currentLanguage === 'ger') {
+                    document.getElementById('info').textContent = `Richtig in ${attempts} Versuch${attempts > 1 ? 'en' : ''}!`;
+                }
                 addGuessToHistory(userGuess, targetHex, attempts, true);
                 endGame(true);
             } else if (attempts >= MAX_ATTEMPTS) {
                 addGuessToHistory(userGuess, targetHex, attempts, false);
                 endGame(false);
             } else {
-                document.getElementById('info').textContent = `Incorrect. ${MAX_ATTEMPTS - attempts} attempt${MAX_ATTEMPTS - attempts > 1 ? 's' : ''} left!`;
+                if(currentLanguage === 'eng') {
+                    document.getElementById('info').textContent = `Incorrect. ${MAX_ATTEMPTS - attempts} attempt${MAX_ATTEMPTS - attempts > 1 ? 's' : ''} left!`;
+                } else if (currentLanguage === 'esp') {
+                    document.getElementById('info').textContent = `Incorrecto. ¡${MAX_ATTEMPTS - attempts} intento${MAX_ATTEMPTS - attempts > 1 ? 's' : ''} restante!`;
+                } else if (currentLanguage === 'pl') {
+                    document.getElementById('info').textContent = `Niepoprawnie. Pozostało ${MAX_ATTEMPTS - attempts} prób${MAX_ATTEMPTS - attempts > 1 ? 'y' : ''}!`;
+                } else if (currentLanguage === 'ger') {
+                    document.getElementById('info').textContent = `Falsch. Noch ${MAX_ATTEMPTS - attempts} Versuch${MAX_ATTEMPTS - attempts > 1 ? 'e' : ''} übrig!`;
+                }
                 addGuessToHistory(userGuess, targetHex, attempts, false);
 
                 inputs.forEach(input => {
@@ -328,13 +354,25 @@ by the Free Software Foundation, either version 3 of the License, or
             currentLanguage = lang;
             info.textContent = translations[lang].info;
             languageButton.textContent = translations[lang].name;
+            document.getElementById('submit').value = translations[lang].button;
+            document.querySelector('.sideTitle').textContent = translations[lang].keybrd;
+            document.querySelectorAll('.sideTitle')[1].textContent = translations[lang].guesses;
+            document.getElementById('correctPosition').textContent = translations[lang].green;
+            document.getElementById('wrongPosition').textContent = translations[lang].yellow;
+            document.getElementById('notInColor').textContent = translations[lang].gray
             hideLanguages();
         }
 
         languageButton.addEventListener('mouseover', function() {
             for (let i = 1; i < languageButtons.length; i++) {
-                languageButtons[i].classList.remove('hidden');
-                languageButtons[i].disabled = false;
+                const btn = languageButtons[i];
+                if (btn.id === currentLanguage) {
+                    btn.classList.add('hidden');
+                    btn.disabled = true;
+                } else {
+                    btn.classList.remove('hidden');
+                    btn.disabled = false;
+                }
             }
         });
 
