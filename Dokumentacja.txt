@@ -1,4 +1,12 @@
-ZAMYSŁ:
+Lider grupy:
+ - Igor
+
+Sposób realizowania projektu:
+ - Scrum
+
+PROJEKT GAMESPACE - strona z minigrami
+
+ZAMYSŁ POCZĄTKOWY:
 
 Każdy tworzy 3 minigry, które na końcu zostaną dodane do strony głównej (lobby)
 
