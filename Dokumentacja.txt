@@ -11,7 +11,7 @@ ZAMYSŁ POCZĄTKOWY:
 Każdy tworzy 3 minigry, które na końcu zostaną dodane do strony głównej (lobby)
 
 ILOŚĆ MINIGIER:
-Igor: 1 + 3*CSS
+Igor: 2 + 2*CSS
 Kuba: 6
 Józek: 2
 
@@ -22,7 +22,7 @@ OldSchool Clicker - Józek
 Little Alchemy - Kuba
 Password Game - Kuba
 Hexle - Igor
-Wordle - Kuba + CSS Igor
+Wordle - Igor
 Numerle - Kuba + CSS Igor
 Datele - Kuba + CSS Igor
 Snake - Józek
