@@ -1,0 +1,41 @@
+-=-=-=-=HISZPANSKI=-=-=-=
+
+<div class="keyRow">
+                <button class="key" id="special1" disabled>Á</button>
+                <button class="key" id="special2" disabled>É</button>
+                <button class="key" id="special3" disabled>Í</button>
+                <button class="key" id="special4" disabled>Ó</button>
+                <button class="key" id="special5" disabled>Ú</button>
+                <button class="key" id="special6" disabled>Ü</button>
+                <button class="key" id="special7" disabled>Ñ</button>
+                <button class="key" id="special8" disabled></button>
+                <button class="key" id="special9" disabled></button>
+            </div>
+
+-=-=-=-=POLSKI=-=-=-=
+
+<div class="keyRow">
+                <button class="key" id="special1" disabled>Ą</button>
+                <button class="key" id="special2" disabled>Ć</button>
+                <button class="key" id="special3" disabled>Ę</button>
+                <button class="key" id="special4" disabled>Ł</button>
+                <button class="key" id="special5" disabled>Ń</button>
+                <button class="key" id="special6" disabled>Ó</button>
+                <button class="key" id="special7" disabled>Ś</button>
+                <button class="key" id="special8" disabled>Ż</button>
+                <button class="key" id="special9" disabled>Ź</button>
+            </div>
+
+-=-=-=-=NIEMIECKI=-=-=-=
+
+            <div class="keyRow">
+                <button class="key" id="special1" disabled>Ä</button>
+                <button class="key" id="special2" disabled>Ö</button>
+                <button class="key" id="special3" disabled>Ü</button>
+                <button class="key" id="special4" disabled>ẞ</button>
+                <button class="key" id="special5" disabled></button>
+                <button class="key" id="special6" disabled></button>
+                <button class="key" id="special7" disabled></button>
+                <button class="key" id="special8" disabled></button>
+                <button class="key" id="special9" disabled></button>
+            </div>

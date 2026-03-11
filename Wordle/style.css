@@ -53,7 +53,7 @@ body {
     width: 100%;
 }
 
-.key {
+.key, .historykey {
     width: 36px;
     height: 36px;
     background-color: #1a121a;
@@ -64,6 +64,15 @@ body {
     cursor: default;
     transition: background-color 0.2s ease, color 0.2s ease;
     border-radius: 3px;
+}
+
+.historykey {
+    width: 38px;
+    height: 38px;
+}
+
+.historyguess{
+    gap: 10px
 }
 
 /* KEYBOARD LEGEND */
@@ -123,27 +132,6 @@ body {
     right: 0;
 }
 
-#difficultybox {
-    left: 0;
-}
-
-#easy{
-    border-color: #90EE90;
-}
-
-
-#normal{
-    border-color: #FFFF00;
-}
-
-#hard{
-    border-color: #FFA500;
-}
-
-#insane{
-    border-color: #FF0000;
-}
-
 .hidden {
     display: none !important;
 }
@@ -195,6 +183,7 @@ body {
 }
 
 #guessbox {
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -232,7 +221,7 @@ body {
 
 #inputContainer {
     display: flex;
-    gap: 6px;
+    gap: 10px;
     margin: 10px 0;
 }
 
@@ -299,7 +288,7 @@ body {
 
 /* GUESS HISTORY */
 
-#guessed {
+#right {
     width: 30%;
     display: flex;
     flex-direction: column;
