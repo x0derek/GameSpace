@@ -7,7 +7,7 @@ const result = document.getElementById("result");
 const placeholder = document.getElementById("placeholder");
 
 function normalize(a,b){
- return [a,b].sort().join("+");
+  return [a,b].sort().join("+");
 }
 
 function combine(a,b){
@@ -80,21 +80,56 @@ document.getElementById("search").addEventListener("input",e=>{
 renderElements();
 
 var recipes = {
-  //A
-  "Air+Earth": "Dust",
+  "Air+Dust": "Sandstorm",
   "Air+Fire": "Energy",
-  "Air+Water": "Rain",
-  "Air+Air": "Pressure",
-  "Fire+Fire": "Heat",
-  "Fire+Water": "Steam",
-  "Dust+Fire+": "Cinder",
-  "Earth+Water": "Mud",
-  "Water+Water": "Puddle",
-  "Dust+Water": "Clay",
-  "Lava+Water": "Obsidian",
-  "Dust+Earth": "Dirt",
+  "Air+Fog": "Haze",
+  "Air+Lava": "Volcanic Ash",
+  "Air+Mud": "Swamp",
+  "Air+Storm": "Tornado",
+  "Air+Water": "Mist",
+  "Brick+Air": "Building",
+  "Brick+Mud": "Adobe",
+  "Cloud+Fire": "Storm",
+  "Cloud+Water": "Rainstorm",
+  "Dust+Earth": "Dust",
+  "Dust+Fire": "Ash",
+  "Dust+Steam": "Clay Steam",
+  "Dust+Water": "Mud",
+  "Earth+Basalt": "Rock",
+  "Earth+Brick": "Clay Brick",
+  "Earth+Crater": "Mountain",
   "Earth+Fire": "Lava",
-  "Earth+Earth": "Land",
-  "Earth+Lava": "Volcano",
-  "Earth+Pressure": "Stone",
-}
+  "Earth+Glass": "Glass Block",
+  "Earth+Mud": "Clay Brick",
+  "Earth+Steam": "Hot Spring",
+  "Earth+Water": "Mud",
+  "Explosion+Earth": "Crater",
+  "Fire+Brick": "Furnace",
+  "Fire+Dust": "Ash",
+  "Fire+Energy": "Plasma",
+  "Fire+Explosion": "Blast",
+  "Fire+Lava": "Lava",
+  "Fire+Plasma": "Sunlight",
+  "Fire+Sandstorm": "Glass Shard",
+  "Fire+Steam": "Explosion",
+  "Fire+Water": "Steam",
+  "Glass+Brick": "Window",
+  "Lava+Air": "Stone",
+  "Lava+Water": "Obsidian",
+  "Mist+Air": "Cloud",
+  "Mist+Water": "Rain",
+  "Mud+Brick": "Adobe",
+  "Mud+Earth": "Clay Brick",
+  "Mud+Swamp": "Quagmire",
+  "Obsidian+Fire": "Volcano",
+  "Plasma+Air": "Electric Cloud",
+  "Plasma+Sunlight": "Star",
+  "Rainstorm+Earth": "Flood",
+  "Steam+Air": "Fog",
+  "Steam+Fire": "Explosion",
+  "Water+Cloud": "Rainwater",
+  "Water+Dust": "Mud",
+  "Water+Fog": "Mistcloud",
+  "Water+Obsidian": "Basalt",
+  "Water+Rainstorm": "Flooded Field"
+};
