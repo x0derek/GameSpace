@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>💩 Poppy Clicker</title>
+<title>💩Poppy Clicker</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
@@ -15,13 +15,9 @@
 <div class="game">
 
 <div class="leftPanel">
-
 <div id="orbitContainer">
-
 <button id="Button">💩</button>
-
 </div>
-
 </div>
 
 <div class="shopPanel">
@@ -39,12 +35,12 @@
 </div>
 
 </div>
-
 </div>
 
-<script>
+<div id="popup">Za mało pieniędzy</div>
 
-let Money = 0
+<script>
+    let Money = 0
 let Up1_Price = 20
 let Up2_Price = 50
 
@@ -58,12 +54,51 @@ function update(){
 moneyText.textContent = Money
 }
 
+/* popup brak pieniędzy */
+
+function popup(e){
+
+const popup = document.getElementById("popup")
+
+popup.style.left = (e.clientX + 10) + "px"
+popup.style.top = (e.clientY - 10) + "px"
+
+popup.style.opacity = 1
+
+setTimeout(()=>{
+popup.style.opacity = 0
+},1000)
+
+}
+
+/* lecący tekst */
+
+function floatingText(x,y,text){
+
+const el = document.createElement("div")
+
+el.className = "floating"
+el.innerText = text
+
+el.style.left = x + "px"
+el.style.top = y + "px"
+
+document.body.appendChild(el)
+
+setTimeout(()=>{
+el.remove()
+},1000)
+
+}
+
 /* kliknięcie */
 
-button.onclick = () => {
+button.onclick = (e)=>{
 
 Money += multy
 update()
+
+floatingText(e.clientX,e.clientY,"+"+multy+" 💩")
 
 button.classList.add("pop")
 
@@ -82,10 +117,9 @@ const tp = document.createElement("div")
 tp.className = "tp"
 tp.innerText = "🧻"
 
-const angle = Math.random() * 360
+const angle = Math.random()*360
 
-tp.style.animationDelay = (Math.random()*2)+"s"
-tp.style.transform = `rotate(${angle}deg) translateX(140px)`
+tp.style.transform = `rotate(${angle}deg) translateX(10px)`
 
 document.getElementById("orbitContainer").appendChild(tp)
 
@@ -93,7 +127,7 @@ document.getElementById("orbitContainer").appendChild(tp)
 
 /* upgrade auto */
 
-document.getElementById("Up1").onclick = () => {
+document.getElementById("Up1").onclick = (e)=>{
 
 if(Money >= Up1_Price){
 
@@ -110,14 +144,14 @@ document.getElementById("Up1_Cena").innerText =
 update()
 
 }else{
-alert("Nie stać cię")
+popup(e)
 }
 
 }
 
 /* upgrade multiplikatora */
 
-document.getElementById("Up2").onclick = () => {
+document.getElementById("Up2").onclick = (e)=>{
 
 if(Money >= Up2_Price){
 
@@ -132,7 +166,7 @@ document.getElementById("Up2_Cena").innerText =
 update()
 
 }else{
-alert("Nie stać cię")
+popup(e)
 }
 
 }
@@ -145,7 +179,6 @@ Money += auto * multy
 update()
 
 },1000)
-
 </script>
 
 </body>

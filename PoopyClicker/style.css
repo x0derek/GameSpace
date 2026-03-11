@@ -1,185 +1,107 @@
+*{
+    overflow: hidden;
+}
 body{
-
+font-family: Arial;
+text-align:center;
 margin:0;
-font-family: Comic Sans MS;
-background:#d8c6a3;
+min-height:100vh;
 
+/* gradient tła */
+
+background: linear-gradient(135deg,#ffe9c6,#ffd3a5,#ffb88c);
+
+/* pattern */
+
+background-image:
+radial-gradient(circle at 20% 20%, rgba(255,255,255,0.2) 2px, transparent 2px),
+radial-gradient(circle at 80% 40%, rgba(255,255,255,0.15) 2px, transparent 2px),
+radial-gradient(circle at 40% 80%, rgba(255,255,255,0.15) 2px, transparent 2px);
+
+background-size: 120px 120px;
+
+animation: bgMove 20s linear infinite;
 }
 
-/* górny pasek */
+/* animacja tła */
+
+@keyframes bgMove{
+0%{
+background-position:0 0,0 0,0 0;
+}
+100%{
+background-position:200px 200px, -200px 200px, 200px -200px;
+}
+}
 
 .topBar{
-
-background:#4b2e16;
-color:white;
-font-size:35px;
-text-align:center;
-padding:20px;
-
-border-bottom:8px solid #2c1a0d;
-
+font-size:24px;
+margin:20px;
 }
-
-/* layout */
 
 .game{
-
 display:flex;
-height:90vh;
-
-}
-
-/* lewa strona */
-
-.leftPanel{
-
-flex:1;
-display:flex;
-align-items:center;
 justify-content:center;
-
-background:
-repeating-linear-gradient(
-90deg,
-#8b5a2b 0px,
-#8b5a2b 40px,
-#7a4d24 40px,
-#7a4d24 80px
-);
-
+gap:50px;
 }
-
-/* kontener orbit */
-
-#orbitContainer{
-
-position:relative;
-width:320px;
-height:320px;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-}
-
-/* przycisk */
 
 #Button{
-
-font-size:150px;
-background:none;
+font-size:80px;
 border:none;
+background:none;
 cursor:pointer;
-
-transition:0.1s;
-
-filter:drop-shadow(0 5px 5px rgba(0,0,0,0.4));
-
+transition:transform 0.1s;
 }
 
-#Button:hover{
-
-transform:scale(1.1);
-
+#Button.pop{
+transform:scale(1.2);
 }
 
-/* animacja kliknięcia */
-
-.pop{
-
-transform:scale(0.9) rotate(5deg);
-
+.shopPanel{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
-/* rolki */
+.upgrade{
+margin:10px;
+}
 
-.tp{
+/* popup */
 
+#popup{
 position:absolute;
-font-size:40px;
-
-animation:spin 6s linear infinite;
-
+background:rgba(255,255,255,0.95);
+border:1px solid #ccc;
+padding:8px 12px;
+border-radius:6px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+pointer-events:none;
+opacity:0;
+transition:opacity 0.2s;
 }
 
-/* orbitowanie */
+/* lecący tekst */
 
-@keyframes spin{
+.floating{
+position:absolute;
+font-weight:bold;
+color:#4caf50;
+pointer-events:none;
+animation:floatUp 1s forwards;
+}
+
+@keyframes floatUp{
 
 0%{
-transform:rotate(0deg) translateX(140px) rotate(0deg);
+opacity:1;
+transform:translateY(0);
 }
 
 100%{
-transform:rotate(360deg) translateX(140px) rotate(-360deg);
+opacity:0;
+transform:translateY(-50px);
 }
-
-}
-
-/* sklep */
-
-.shopPanel{
-
-width:320px;
-
-background:
-repeating-linear-gradient(
-0deg,
-#7a4d24 0px,
-#7a4d24 40px,
-#6a411c 40px,
-#6a411c 80px
-);
-
-color:white;
-
-padding:20px;
-
-overflow-y:auto;
-
-border-left:8px solid #2c1a0d;
-
-}
-
-/* upgrade */
-
-.upgrade{
-
-background:#a56a3a;
-
-padding:15px;
-
-margin:15px 0;
-
-border-radius:10px;
-
-box-shadow:
-inset 0 0 10px rgba(0,0,0,0.4),
-0 5px 10px rgba(0,0,0,0.3);
-
-}
-
-.upgrade button{
-
-width:100%;
-margin-top:10px;
-padding:10px;
-
-border:none;
-border-radius:8px;
-
-font-size:16px;
-
-cursor:pointer;
-
-background:#3ddc84;
-
-}
-
-.upgrade button:hover{
-
-background:#2dbf6e;
-transform:scale(1.05);
 
 }
