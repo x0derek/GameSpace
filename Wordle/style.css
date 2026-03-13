@@ -9,15 +9,17 @@ body {
     margin: 0;
     font-family: Arial, sans-serif;
     overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 #main {
+    flex: 1;
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
     width: 100%;
-    min-height: 100vh;
     padding: 20px;
     gap: 20px;
 }
@@ -307,60 +309,13 @@ body {
     overflow-y: auto;
 }
 
-/* ONE GUESS IN HISTORY */
-.historyEntry {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background-color: #1a121a;
-    border: 1px solid #f9ebf920;
-    padding: 8px 10px;
-    border-radius: 4px;
-    animation: fadeIn 0.25s ease;
-}
-
-.historyCorrect {
-    border-color: #90EE9080;
-    background-color: #1a2a1a;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-6px); }
-    to   { opacity: 1; transform: translateY(0); }
-}
-
-.historyAttempt {
-    font-size: 12px;
-    color: #f9ebf960;
-    width: 24px;
-    flex-shrink: 0;
+/* FOOTER */
+footer{
     text-align: center;
-}
-
-.historySwatch {
-    width: 32px;
-    height: 32px;
-    border: 1px solid #f9ebf940;
-    border-radius: 3px;
-    flex-shrink: 0;
-}
-
-.historyHex {
-    display: flex;
-    gap: 3px;
-}
-
-.historyChar {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    font-size: 13px;
-    font-family: 'Courier New', monospace;
-    font-weight: bold;
-    border-radius: 3px;
-    text-transform: uppercase;
+    padding: 10px;
+    font-size: 12px;
+    color: #f89af850;
+    letter-spacing: 2px;
 }
 
 /* SCROLLBAR */
