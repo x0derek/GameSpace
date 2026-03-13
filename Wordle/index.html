@@ -129,7 +129,6 @@ by the Free Software Foundation, either version 3 of the License, or
                 </div>
                 <div id="guessbox">
                     <span id="info">Guess The Word</span>
-                    <div id="attemptsLeft"></div>
                     <div id="inputContainer">
                         <input type="text" class="colorInput" maxlength="1" pattern="[A-Za-ząćęłńóśżźĄĆĘŁŃÓŚŻŹ]">
                         <input type="text" class="colorInput" maxlength="1" pattern="[A-Za-ząćęłńóśżźĄĆĘŁŃÓŚŻŹ]">
@@ -148,7 +147,8 @@ by the Free Software Foundation, either version 3 of the License, or
         const MAX_ATTEMPTS = 6;
         let MAX_ATTEMPTS_CURRENT = 6;
 
-        let targetColor = '';
+        let targetWord = '';
+        let wordList = [];
         let attempts = 0;
         let currentLanguage = 'eng';
         let showInputColors = false;
@@ -165,33 +165,28 @@ by the Free Software Foundation, either version 3 of the License, or
         }
 
         function resetKeyboard() {
-            const hexChars = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'];
-            hexChars.forEach(char => {
-                const el = document.getElementById(char);
-                if (el) {
-                    el.style.backgroundColor = '';
-                    el.style.color = '#f9ebf9';
-                }
+            document.querySelectorAll('.key').forEach(el => {
+                el.style.backgroundColor = '';
+                el.style.color = '#f9ebf9';
             });
         }
 
-        function updateKeyboard(userGuessHex, targetHex) {
+        function updateKeyboard(guess, target, result) {
             for (let i = 0; i < 5; i++) {
-                const char = userGuessHex[i].toLowerCase();
+                const char = guess[i].toLowerCase();
                 const el = document.getElementById(char);
                 if (!el) continue;
-
                 const currentBg = el.style.backgroundColor;
-                if (char === targetHex[i].toLowerCase()) {
+                if (result[i] === 'green') {
                     el.style.backgroundColor = '#90EE90';
                     el.style.color = '#0f0a0f';
-                } else if (targetHex.toLowerCase().includes(char)) {
-                    if (currentBg !== '#90ee90') {
+                } else if (result[i] === 'yellow') {
+                    if (currentBg !== 'rgb(144, 238, 144)') {
                         el.style.backgroundColor = '#FFFF00';
                         el.style.color = '#0f0a0f';
                     }
                 } else {
-                    if (currentBg !== '#90ee90' && currentBg !== '#ffff00') {
+                    if (currentBg !== 'rgb(144, 238, 144)' && currentBg !== 'rgb(255, 255, 0)') {
                         el.style.backgroundColor = '#D3D3D3';
                         el.style.color = '#0f0a0f';
                     }
@@ -203,15 +198,25 @@ by the Free Software Foundation, either version 3 of the License, or
             document.getElementById('submit').style.display = 'none';
             document.getElementById('NewGame').style.display = 'block';
             inputs.forEach(input => { input.disabled = true; });
-
             if (!won) {
-                document.getElementById('info').textContent = `The word was ${targetColor}`;
+                document.getElementById('info').textContent = `The word was: ${targetWord}`;
             }
         }
 
+        async function loadWords(lang) {
+            const map = {
+                eng: 'wordsEng.json',
+                esp: 'wordEsp.json',
+                pl:  'wordsPl.json',
+                ger: 'wordsGer.json'
+            };
+            const res = await fetch(map[lang]);
+            const data = await res.json();
+            wordList = data.words;
+        }
+
         function startGame() {
-            targetColor = generateRandomColor();
-            document.getElementById('box1').style.backgroundColor = targetColor;
+            targetWord = wordList[Math.floor(Math.random() * wordList.length)].toUpperCase();
             attempts = 0;
             showInputColors = false;
             document.getElementById('info').textContent = translations[currentLanguage].info;
@@ -223,24 +228,30 @@ by the Free Software Foundation, either version 3 of the License, or
             });
             document.getElementById('submit').style.display = 'block';
             document.getElementById('NewGame').style.display = 'none';
-            document.getElementById('guessHistory').innerHTML = '';
+            for (let row = 1; row <= 6; row++) {
+                for (let col = 1; col <= 5; col++) {
+                    const cell = document.getElementById('' + row + col);
+                    if (!cell) continue;
+                    cell.textContent = '';
+                    cell.style.backgroundColor = '';
+                    cell.style.color = '#f9ebf9';
+                }
+            }
             resetKeyboard();
-            updateAttemptsDisplay();
             inputs[0].focus();
         }
 
         function updateInputColors() {
             if (!showInputColors) return;
-            const targetValue = targetColor.substring(1);
             inputs.forEach((input, index) => {
                 const char = input.value.toUpperCase();
                 if (!char) {
                     input.style.backgroundColor = '';
                     input.style.color = '#f9ebf9';
-                } else if (char === targetValue[index]) {
+                } else if (char === targetWord[index]) {
                     input.style.backgroundColor = '#90EE90';
                     input.style.color = '#0f0a0f';
-                } else if (targetValue.includes(char)) {
+                } else if (targetWord.includes(char)) {
                     input.style.backgroundColor = '#FFFF00';
                     input.style.color = '#0f0a0f';
                 } else {
@@ -278,114 +289,87 @@ by the Free Software Foundation, either version 3 of the License, or
             ger: { info: 'Errate die Wort', name: 'GER', again: 'Nohmal Spielen', button: 'Erraten', keybrd: 'Tastatur', guesses: 'Versuche', green: 'Richtige Position', yellow: 'Falsche Position', gray: 'Nicht in Farbe' }
         };
 
-        function addGuessToHistory(userGuess, targetHex, attemptNum, isCorrect) {
-            const userHex = userGuess.substring(1);
-            const history = document.getElementById('guessHistory');
-
-            const entry = document.createElement('div');
-            entry.className = 'historyEntry' + (isCorrect ? ' historyCorrect' : '');
-
-            const swatch = document.createElement('div');
-            swatch.className = 'historySwatch';
-            swatch.style.backgroundColor = userGuess;
-
-
+        function fillGuessRow(rowNum, guess, result) {
             for (let i = 0; i < 5; i++) {
-                const charSpan = document.createElement('span');
-                charSpan.className = 'historyChar';
-                charSpan.textContent = userHex[i];
-                if (userHex[i] === targetHex[i]) {
-                    charSpan.style.backgroundColor = '#90EE90';
-                    charSpan.style.color = '#0f0a0f';
-                } else if (targetHex.includes(userHex[i])) {
-                    charSpan.style.backgroundColor = '#FFFF00';
-                    charSpan.style.color = '#0f0a0f';
+                const cell = document.getElementById('' + rowNum + (i + 1));
+                if (!cell) continue;
+                cell.textContent = guess[i];
+                if (result[i] === 'green') {
+                    cell.style.backgroundColor = '#90EE90';
+                    cell.style.color = '#0f0a0f';
+                } else if (result[i] === 'yellow') {
+                    cell.style.backgroundColor = '#FFFF00';
+                    cell.style.color = '#0f0a0f';
                 } else {
-                    charSpan.style.backgroundColor = '#444';
-                    charSpan.style.color = '#aaa';
+                    cell.style.backgroundColor = '#444';
+                    cell.style.color = '#aaa';
                 }
-                hexDisplay.appendChild(charSpan);
             }
+        }
+        document.getElementById('submit').addEventListener('click', function() {
+        let userGuess = Array.from(inputs).map(input => input.value.toUpperCase()).join('');
 
-            const attemptLabel = document.createElement('div');
-            attemptLabel.className = 'historyAttempt';
-            attemptLabel.textContent = '#' + attemptNum;
-
-            entry.appendChild(attemptLabel);
-            entry.appendChild(swatch);
-            entry.appendChild(hexDisplay);
-
-            history.insertBefore(entry, history.firstChild);
+        if (userGuess.length < 5) {
+            if (currentLanguage === 'eng') document.getElementById('info').textContent = 'Please fill all fields!';
+            else if (currentLanguage === 'esp') document.getElementById('info').textContent = '¡Por favor, completa todos los campos!';
+            else if (currentLanguage === 'pl') document.getElementById('info').textContent = 'Proszę wypełnić wszystkie pola!';
+            else if (currentLanguage === 'ger') document.getElementById('info').textContent = 'Bitte füllen Sie alle Felder aus!';
+            return;
         }
 
-        document.getElementById('submit').addEventListener('click', function() {
+        const result = Array(5).fill('gray');
+        const targetArr = targetWord.split('');
+        const guessArr = userGuess.split('');
+        const used = Array(5).fill(false);
 
-            let userGuess = Array.from(inputs).map(input => input.value.toUpperCase()).join('');
-
-            if (userGuess.length < 5) {
-                if(currentLanguage === 'eng') {
-                    document.getElementById('info').textContent = 'Please fill all fields!';
-                } else if (currentLanguage === 'esp') {
-                    document.getElementById('info').textContent = '¡Por favor, completa todos los campos!';
-                } else if (currentLanguage === 'pl') {
-                    document.getElementById('info').textContent = 'Proszę wypełnić wszystkie pola!';
-                } else if (currentLanguage === 'ger') {
-                    document.getElementById('info').textContent = 'Bitte füllen Sie alle Felder aus!';
-                }
-                return;
+        for (let i = 0; i < 5; i++) {
+            if (guessArr[i] === targetArr[i]) {
+                result[i] = 'green';
+                used[i] = true;
             }
-
-            showInputColors = true;
-            updateInputColors();
-
-
-            userGuess = '#' + userGuess;
-            attempts++;
-            updateAttemptsDisplay();
-
-            const targetHex = targetColor.substring(1).toUpperCase();
-            const userHex = userGuess.substring(1).toUpperCase();
-
-            updateKeyboard(userHex, targetHex);
-
-            if (userGuess === targetColor) {
-                if(currentLanguage === 'eng') {
-                    document.getElementById('info').textContent = `Correct in ${attempts} attempt${attempts > 1 ? 's' : ''}!`;
-                } else if (currentLanguage === 'esp') {
-                    document.getElementById('info').textContent = `¡Correcto en ${attempts} intento${attempts > 1 ? 's' : ''}!`;
-                } else if (currentLanguage === 'pl') {
-                    document.getElementById('info').textContent = `Poprawnie w ${attempts} prób${attempts > 1 ? 'ach' : 'ie'}!`;
-                } else if (currentLanguage === 'ger') {
-                    document.getElementById('info').textContent = `Richtig in ${attempts} Versuch${attempts > 1 ? 'en' : ''}!`;
+        }
+        for (let i = 0; i < 5; i++) {
+            if (result[i] === 'green') continue;
+            for (let j = 0; j < 5; j++) {
+                if (!used[j] && guessArr[i] === targetArr[j]) {
+                    result[i] = 'yellow';
+                    used[j] = true;
+                    break;
                 }
-                addGuessToHistory(userGuess, targetHex, attempts, true);
-                endGame(true);
-            } else if (attempts >= MAX_ATTEMPTS_CURRENT) {
-                addGuessToHistory(userGuess, targetHex, attempts, false);
-                endGame(false);
-            } else {
-                if(currentLanguage === 'eng') {
-                    document.getElementById('info').textContent = `Incorrect. ${MAX_ATTEMPTS_CURRENT - attempts} attempt${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 's' : ''} left!`;
-                } else if (currentLanguage === 'esp') {
-                    document.getElementById('info').textContent = `Incorrecto. ¡${MAX_ATTEMPTS_CURRENT - attempts} intento${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 's' : ''} restante!`;
-                } else if (currentLanguage === 'pl') {
-                    document.getElementById('info').textContent = `Niepoprawnie. Pozostało ${MAX_ATTEMPTS_CURRENT - attempts} prób${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 'y' : ''}!`;
-                } else if (currentLanguage === 'ger') {
-                    document.getElementById('info').textContent = `Falsch. Noch ${MAX_ATTEMPTS_CURRENT - attempts} Versuch${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 'e' : ''} übrig!`;
-                }
-                addGuessToHistory(userGuess, targetHex, attempts, false);
-
-                inputs.forEach(input => {
-                    input.value = '';
-                    input.style.backgroundColor = '';
-                    input.style.color = '#f9ebf9';
-                });
-                showInputColors = false;
-                inputs[0].focus();
             }
+        }
+
+        attempts++;
+        updateKeyboard(userGuess, targetWord, result);
+        fillGuessRow(attempts, userGuess, result);
+
+        if (userGuess === targetWord) {
+            if (currentLanguage === 'eng') document.getElementById('info').textContent = `Correct in ${attempts} attempt${attempts > 1 ? 's' : ''}!`;
+            else if (currentLanguage === 'esp') document.getElementById('info').textContent = `¡Correcto en ${attempts} intento${attempts > 1 ? 's' : ''}!`;
+            else if (currentLanguage === 'pl') document.getElementById('info').textContent = `Poprawnie w ${attempts} prób${attempts > 1 ? 'ach' : 'ie'}!`;
+            else if (currentLanguage === 'ger') document.getElementById('info').textContent = `Richtig in ${attempts} Versuch${attempts > 1 ? 'en' : ''}!`;
+            endGame(true);
+        } else if (attempts >= MAX_ATTEMPTS_CURRENT) {
+            endGame(false);
+        } else {
+            if (currentLanguage === 'eng') document.getElementById('info').textContent = `Incorrect. ${MAX_ATTEMPTS_CURRENT - attempts} attempt${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 's' : ''} left!`;
+            else if (currentLanguage === 'esp') document.getElementById('info').textContent = `Incorrecto. ¡${MAX_ATTEMPTS_CURRENT - attempts} intento${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 's' : ''} restante!`;
+            else if (currentLanguage === 'pl') document.getElementById('info').textContent = `Niepoprawnie. Pozostało ${MAX_ATTEMPTS_CURRENT - attempts} prób${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 'y' : ''}!`;
+            else if (currentLanguage === 'ger') document.getElementById('info').textContent = `Falsch. Noch ${MAX_ATTEMPTS_CURRENT - attempts} Versuch${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 'e' : ''} übrig!`;
+
+            inputs.forEach(input => {
+                input.value = '';
+                input.style.backgroundColor = '';
+                input.style.color = '#f9ebf9';
+            });
+            showInputColors = false;
+            inputs[0].focus();
+        }
+    });
+
+        document.getElementById('NewGame').addEventListener('click', () => {
+            loadWords(currentLanguage).then(() => startGame());
         });
-
-        document.getElementById('NewGame').addEventListener('click', startGame);
 
         const languageButtons = document.querySelectorAll('#languagebox .language');
         const info = document.getElementById('info');
@@ -411,6 +395,31 @@ by the Free Software Foundation, either version 3 of the License, or
             document.getElementById('wrongPosition').textContent = translations[lang].yellow;
             document.getElementById('notInColor').textContent = translations[lang].gray
             hideLanguages();
+            updateSpecialKeys(lang);
+            loadWords(lang).then(() => startGame());
+        }
+
+        const specialKeys = {
+            eng: [],
+            pl:  ['Ą','Ć','Ę','Ł','Ń','Ó','Ś','Ż','Ź'],
+            esp: ['Á','É','Í','Ó','Ú','Ü','Ñ'],
+            ger: ['Ä','Ö','Ü','ß']
+        };
+
+        function updateSpecialKeys(lang) {
+            const keys = specialKeys[lang] || [];
+            for (let i = 1; i <= 9; i++) {
+                const el = document.getElementById('special' + i);
+                if (!el) continue;
+                const char = keys[i - 1] || '';
+                if (char) {
+                    el.textContent = char;
+                    el.style.display = '';
+                } else {
+                    el.textContent = '';
+                    el.style.display = 'none';
+                }
+            }
         }
 
         languageButton.addEventListener('mouseover', function() {
@@ -433,7 +442,7 @@ by the Free Software Foundation, either version 3 of the License, or
         });
 
         setLanguage('eng');
-        startGame();
+        loadWords('eng').then(() => startGame());
 </script>
 </body>
 </html>
