@@ -1,0 +1,107 @@
+*{
+    overflow: hidden;
+}
+body{
+font-family: Arial;
+text-align:center;
+margin:0;
+min-height:100vh;
+
+/* gradient tła */
+
+background: linear-gradient(135deg,#ffe9c6,#ffd3a5,#ffb88c);
+
+/* pattern */
+
+background-image:
+radial-gradient(circle at 20% 20%, rgba(255,255,255,0.2) 2px, transparent 2px),
+radial-gradient(circle at 80% 40%, rgba(255,255,255,0.15) 2px, transparent 2px),
+radial-gradient(circle at 40% 80%, rgba(255,255,255,0.15) 2px, transparent 2px);
+
+background-size: 120px 120px;
+
+animation: bgMove 20s linear infinite;
+}
+
+/* animacja tła */
+
+@keyframes bgMove{
+0%{
+background-position:0 0,0 0,0 0;
+}
+100%{
+background-position:200px 200px, -200px 200px, 200px -200px;
+}
+}
+
+.topBar{
+font-size:24px;
+margin:20px;
+}
+
+.game{
+display:flex;
+justify-content:center;
+gap:50px;
+}
+
+#Button{
+font-size:80px;
+border:none;
+background:none;
+cursor:pointer;
+transition:transform 0.1s;
+}
+
+#Button.pop{
+transform:scale(1.2);
+}
+
+.shopPanel{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+.upgrade{
+margin:10px;
+}
+
+/* popup */
+
+#popup{
+position:absolute;
+background:rgba(255,255,255,0.95);
+border:1px solid #ccc;
+padding:8px 12px;
+border-radius:6px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+pointer-events:none;
+opacity:0;
+transition:opacity 0.2s;
+}
+
+/* lecący tekst */
+
+.floating{
+position:absolute;
+font-weight:bold;
+color:#4caf50;
+pointer-events:none;
+animation:floatUp 1s forwards;
+}
+
+@keyframes floatUp{
+
+0%{
+opacity:1;
+transform:translateY(0);
+}
+
+100%{
+opacity:0;
+transform:translateY(-50px);
+}
+
+}

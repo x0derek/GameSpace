@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>💩Poppy Clicker</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="topBar">
+🧻 Kupy: <span id="Money">0</span>
+</div>
+
+<div class="game">
+
+<div class="leftPanel">
+<div id="orbitContainer">
+<button id="Button">💩</button>
+</div>
+</div>
+
+<div class="shopPanel">
+
+<h2>🧻 Sklep</h2>
+
+<div class="upgrade">
+<span id="Up1_Cena">🚽 Auto Kupa - 20</span>
+<button id="Up1">Kup</button>
+</div>
+
+<div class="upgrade">
+<span id="Up2_Cena">🧻 Mega Podtarcie - 50</span>
+<button id="Up2">Kup</button>
+</div>
+
+</div>
+</div>
+
+<div id="popup">Za mało pieniędzy</div>
+
+<script>
+    let Money = 0
+let Up1_Price = 20
+let Up2_Price = 50
+
+let multy = 1
+let auto = 0
+
+const moneyText = document.getElementById("Money")
+const button = document.getElementById("Button")
+
+function update(){
+moneyText.textContent = Money
+}
+
+/* popup brak pieniędzy */
+
+function popup(e){
+
+const popup = document.getElementById("popup")
+
+popup.style.left = (e.clientX + 10) + "px"
+popup.style.top = (e.clientY - 10) + "px"
+
+popup.style.opacity = 1
+
+setTimeout(()=>{
+popup.style.opacity = 0
+},1000)
+
+}
+
+/* lecący tekst */
+
+function floatingText(x,y,text){
+
+const el = document.createElement("div")
+
+el.className = "floating"
+el.innerText = text
+
+el.style.left = x + "px"
+el.style.top = y + "px"
+
+document.body.appendChild(el)
+
+setTimeout(()=>{
+el.remove()
+},1000)
+
+}
+
+/* kliknięcie */
+
+button.onclick = (e)=>{
+
+Money += multy
+update()
+
+floatingText(e.clientX,e.clientY,"+"+multy+" 💩")
+
+button.classList.add("pop")
+
+setTimeout(()=>{
+button.classList.remove("pop")
+},100)
+
+}
+
+/* spawn rolki */
+
+function spawnToilet(){
+
+const tp = document.createElement("div")
+
+tp.className = "tp"
+tp.innerText = "🧻"
+
+const angle = Math.random()*360
+
+tp.style.transform = `rotate(${angle}deg) translateX(10px)`
+
+document.getElementById("orbitContainer").appendChild(tp)
+
+}
+
+/* upgrade auto */
+
+document.getElementById("Up1").onclick = (e)=>{
+
+if(Money >= Up1_Price){
+
+Money -= Up1_Price
+auto++
+
+spawnToilet()
+
+Up1_Price = Math.floor(Up1_Price * 1.6)
+
+document.getElementById("Up1_Cena").innerText =
+"🚽 Auto Kupa - " + Up1_Price
+
+update()
+
+}else{
+popup(e)
+}
+
+}
+
+/* upgrade multiplikatora */
+
+document.getElementById("Up2").onclick = (e)=>{
+
+if(Money >= Up2_Price){
+
+Money -= Up2_Price
+multy++
+
+Up2_Price = Math.floor(Up2_Price * 2)
+
+document.getElementById("Up2_Cena").innerText =
+"🧻 Mega Podtarcie - " + Up2_Price
+
+update()
+
+}else{
+popup(e)
+}
+
+}
+
+/* auto click */
+
+setInterval(()=>{
+
+Money += auto * multy
+update()
+
+},1000)
+</script>
+
+</body>
+</html>
