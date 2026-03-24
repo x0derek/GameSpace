@@ -1,0 +1,450 @@
+<!--
+Wordle - Word Guessing Game
+Copyright (C) 2026 Igor 'x0derek' Karpowicz
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Wordle</title>
+</head>
+<body>
+    <div id="main">
+
+        <!-- KEYBOARD  -->
+        <div id="keyboard">
+            <div class="sideTitle">KEYBOARD</div>
+            <div class="keyRow">
+                <button class="key" id="special1" disabled>Ą</button>
+                <button class="key" id="special2" disabled>Ć</button>
+                <button class="key" id="special3" disabled>Ę</button>
+                <button class="key" id="special4" disabled>Ł</button>
+                <button class="key" id="special5" disabled>Ń</button>
+                <button class="key" id="special6" disabled>Ó</button>
+                <button class="key" id="special7" disabled>Ś</button>
+                <button class="key" id="special8" disabled>Ż</button>
+                <button class="key" id="special9" disabled>Ź</button>
+            </div>
+            <div class="keyRow">
+                <button class="key" id="q" disabled>Q</button>
+                <button class="key" id="w" disabled>W</button>
+                <button class="key" id="e" disabled>E</button>
+                <button class="key" id="r" disabled>R</button>
+                <button class="key" id="t" disabled>T</button>
+                <button class="key" id="y" disabled>Y</button>
+                <button class="key" id="u" disabled>U</button>
+                <button class="key" id="i" disabled>I</button>
+                <button class="key" id="o" disabled>O</button>
+                <button class="key" id="p" disabled>P</button>
+            </div>
+            <div class="keyRow">
+                <button class="key" id="a" disabled>A</button>
+                <button class="key" id="s" disabled>S</button>
+                <button class="key" id="d" disabled>D</button>
+                <button class="key" id="f" disabled>F</button>
+                <button class="key" id="g" disabled>G</button>
+                <button class="key" id="h" disabled>H</button>
+                <button class="key" id="j" disabled>J</button>
+                <button class="key" id="k" disabled>K</button>
+                <button class="key" id="l" disabled>L</button>
+            </div>
+            <div class="keyRow">
+                <button class="key" id="z" disabled>Z</button>
+                <button class="key" id="x" disabled>X</button>
+                <button class="key" id="c" disabled>C</button>
+                <button class="key" id="v" disabled>V</button>
+                <button class="key" id="b" disabled>B</button>
+                <button class="key" id="n" disabled>N</button>
+                <button class="key" id="m" disabled>M</button>
+            </div>
+            <div class="keyLegend">
+                <div class="legendItem"><span class="legendDot" style="background:#90EE90;"></span> <span id="correctPosition">Correct position</span></div>
+                <div class="legendItem"><span class="legendDot" style="background:#FFFF00;"></span> <span id="wrongPosition">Wrong position</span></div>
+                <div class="legendItem"><span class="legendDot" style="background:#D3D3D3;"></span> <span id="notInColor">Not in color</span></div>
+            </div>
+        </div>
+
+        <!-- GAME -->
+        <div id="game">
+            <div id="languagebox">
+                <button id="language" class="language">ENG</button>
+                <button id="eng" class="language hidden">ENG</button>
+                <button id="esp" class="language hidden">ESP</button>
+                <button id="pl" class="language hidden">PL</button>
+                <button id="ger" class="language hidden">GER</button>
+            </div>
+            <div class="box">
+                <span id="title">Wordle</span>
+                <div class="sideTitle">GUESSES</div>
+                <div id="guessHistory">
+                    <div class="keyRow historyguess" id="guess1">
+                        <button class="historykey" id="11" disabled></button>
+                        <button class="historykey" id="12" disabled></button>
+                        <button class="historykey" id="13" disabled></button>
+                        <button class="historykey" id="14" disabled></button>
+                        <button class="historykey" id="15" disabled></button>
+                    </div>
+                    <div class="keyRow historyguess" id="guess2">
+                        <button class="historykey" id="21" disabled></button>
+                        <button class="historykey" id="22" disabled></button>
+                        <button class="historykey" id="23" disabled></button>
+                        <button class="historykey" id="24" disabled></button>
+                        <button class="historykey" id="25" disabled></button>
+                    </div>
+                    <div class="keyRow historyguess" id="guess3">
+                        <button class="historykey" id="31" disabled></button>
+                        <button class="historykey" id="32" disabled></button>
+                        <button class="historykey" id="33" disabled></button>
+                        <button class="historykey" id="34" disabled></button>
+                        <button class="historykey" id="35" disabled></button>
+                    </div>
+                    <div class="keyRow historyguess" id="guess4">
+                        <button class="historykey" id="41" disabled></button>
+                        <button class="historykey" id="42" disabled></button>
+                        <button class="historykey" id="43" disabled></button>
+                        <button class="historykey" id="44" disabled></button>
+                        <button class="historykey" id="45" disabled></button>
+                    </div>
+                    <div class="keyRow historyguess" id="guess5">
+                        <button class="historykey" id="51" disabled></button>
+                        <button class="historykey" id="52" disabled></button>
+                        <button class="historykey" id="53" disabled></button>
+                        <button class="historykey" id="54" disabled></button>
+                        <button class="historykey" id="55" disabled></button>
+                    </div>
+                    <div class="keyRow historyguess" id="guess6">
+                        <button class="historykey" id="61" disabled></button>
+                        <button class="historykey" id="62" disabled></button>
+                        <button class="historykey" id="63" disabled></button>
+                        <button class="historykey" id="64" disabled></button>
+                        <button class="historykey" id="65" disabled></button>
+                    </div>
+                </div>
+                <div id="guessbox">
+                    <span id="info">Guess The Word</span>
+                    <div id="inputContainer">
+                        <input type="text" class="colorInput" maxlength="1" pattern="[A-Za-ząćęłńóśżźĄĆĘŁŃÓŚŻŹ]">
+                        <input type="text" class="colorInput" maxlength="1" pattern="[A-Za-ząćęłńóśżźĄĆĘŁŃÓŚŻŹ]">
+                        <input type="text" class="colorInput" maxlength="1" pattern="[A-Za-ząćęłńóśżźĄĆĘŁŃÓŚŻŹ]">
+                        <input type="text" class="colorInput" maxlength="1" pattern="[A-Za-ząćęłńóśżźĄĆĘŁŃÓŚŻŹ]">
+                        <input type="text" class="colorInput" maxlength="1" pattern="[A-Za-ząćęłńóśżźĄĆĘŁŃÓŚŻŹ]">
+                    </div>
+                    <input type="button" value="Submit" id="submit">
+                    <input type="button" value="Play Again" id="NewGame" style="display:none;">
+                </div>
+            </div>
+        </div>
+        <div id="right">
+        </div>
+    </div>
+<script>
+        const MAX_ATTEMPTS = 6;
+        let MAX_ATTEMPTS_CURRENT = 6;
+
+        let targetWord = '';
+        let wordList = [];
+        let attempts = 0;
+        let currentLanguage = 'eng';
+        let showInputColors = false;
+        const inputs = document.querySelectorAll('.colorInput');
+
+        function updateAttemptsDisplay() {
+            const dots = document.getElementById('attemptsLeft');
+            dots.innerHTML = '';
+            for (let i = 0; i < MAX_ATTEMPTS_CURRENT; i++) {
+                const dot = document.createElement('span');
+                dot.className = 'attemptDot' + (i < attempts ? ' attemptDotUsed' : '');
+                dots.appendChild(dot);
+            }
+        }
+
+        function resetKeyboard() {
+            document.querySelectorAll('.key').forEach(el => {
+                el.style.backgroundColor = '';
+                el.style.color = '#f9ebf9';
+            });
+        }
+
+        function updateKeyboard(guess, target, result) {
+            for (let i = 0; i < 5; i++) {
+                const char = guess[i].toLowerCase();
+                const el = document.getElementById(char);
+                if (!el) continue;
+                const currentBg = el.style.backgroundColor;
+                if (result[i] === 'green') {
+                    el.style.backgroundColor = '#90EE90';
+                    el.style.color = '#0f0a0f';
+                } else if (result[i] === 'yellow') {
+                    if (currentBg !== 'rgb(144, 238, 144)') {
+                        el.style.backgroundColor = '#FFFF00';
+                        el.style.color = '#0f0a0f';
+                    }
+                } else {
+                    if (currentBg !== 'rgb(144, 238, 144)' && currentBg !== 'rgb(255, 255, 0)') {
+                        el.style.backgroundColor = '#D3D3D3';
+                        el.style.color = '#0f0a0f';
+                    }
+                }
+            }
+        }
+
+        function endGame(won) {
+            document.getElementById('submit').style.display = 'none';
+            document.getElementById('NewGame').style.display = 'block';
+            inputs.forEach(input => { input.disabled = true; });
+            if (!won) {
+                document.getElementById('info').textContent = `The word was: ${targetWord}`;
+            }
+        }
+
+        async function loadWords(lang) {
+            const map = {
+                eng: 'wordsEng.json',
+                esp: 'wordEsp.json',
+                pl:  'wordsPl.json',
+                ger: 'wordsGer.json'
+            };
+            const res = await fetch(map[lang]);
+            const data = await res.json();
+            wordList = data.words;
+        }
+
+        function startGame() {
+            targetWord = wordList[Math.floor(Math.random() * wordList.length)].toUpperCase();
+            attempts = 0;
+            showInputColors = false;
+            document.getElementById('info').textContent = translations[currentLanguage].info;
+            inputs.forEach(input => {
+                input.value = '';
+                input.style.backgroundColor = '';
+                input.style.color = '#f9ebf9';
+                input.disabled = false;
+            });
+            document.getElementById('submit').style.display = 'block';
+            document.getElementById('NewGame').style.display = 'none';
+            for (let row = 1; row <= 6; row++) {
+                for (let col = 1; col <= 5; col++) {
+                    const cell = document.getElementById('' + row + col);
+                    if (!cell) continue;
+                    cell.textContent = '';
+                    cell.style.backgroundColor = '';
+                    cell.style.color = '#f9ebf9';
+                }
+            }
+            resetKeyboard();
+            inputs[0].focus();
+        }
+
+        function updateInputColors() {
+            if (!showInputColors) return;
+            inputs.forEach((input, index) => {
+                const char = input.value.toUpperCase();
+                if (!char) {
+                    input.style.backgroundColor = '';
+                    input.style.color = '#f9ebf9';
+                } else if (char === targetWord[index]) {
+                    input.style.backgroundColor = '#90EE90';
+                    input.style.color = '#0f0a0f';
+                } else if (targetWord.includes(char)) {
+                    input.style.backgroundColor = '#FFFF00';
+                    input.style.color = '#0f0a0f';
+                } else {
+                    input.style.backgroundColor = '#D3D3D3';
+                    input.style.color = '#0f0a0f';
+                }
+            });
+        }
+
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const val = e.target.value.replace(/[^A-Za-ząćęłńóśżźĄĆĘŁŃÓŚŻŹ]/g, '');
+                e.target.value = val;
+                if (val && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+                updateInputColors();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !input.value && index > 0) {
+                    inputs[index - 1].focus();
+                    inputs[index - 1].value = '';
+                    updateInputColors();
+                } else if (e.key === 'Enter') {
+                    document.getElementById('submit').click();
+                }
+            });
+        });
+
+        const translations = {
+            eng: { info: 'Guess The Word', name: 'ENG', again: 'Play Again', button: 'Guess', keybrd: 'Keyboard', guesses: 'Guesses', green: 'Correct position', yellow: 'Wrong position', gray: 'Not in color' },
+            esp: { info: 'Adivina el Word', name: 'ESP', again: 'Jugar De Nuevo', button: 'Adivinar', keybrd: 'Teclado', guesses: 'Intentos', green: 'Posición correcta', yellow: 'Posición incorrecta', gray: 'No en el color' },
+            pl: { info: 'Zgadnij Słowo', name: 'PL', again: 'Zagraj Ponownie', button: 'Zgadnij', keybrd: 'Klawiatura', guesses: 'Próby', green: 'Poprawna pozycja', yellow: 'Błędna pozycja', gray: 'Nie w kolorze' },
+            ger: { info: 'Errate die Wort', name: 'GER', again: 'Nohmal Spielen', button: 'Erraten', keybrd: 'Tastatur', guesses: 'Versuche', green: 'Richtige Position', yellow: 'Falsche Position', gray: 'Nicht in Farbe' }
+        };
+
+        function fillGuessRow(rowNum, guess, result) {
+            for (let i = 0; i < 5; i++) {
+                const cell = document.getElementById('' + rowNum + (i + 1));
+                if (!cell) continue;
+                cell.textContent = guess[i];
+                if (result[i] === 'green') {
+                    cell.style.backgroundColor = '#90EE90';
+                    cell.style.color = '#0f0a0f';
+                } else if (result[i] === 'yellow') {
+                    cell.style.backgroundColor = '#FFFF00';
+                    cell.style.color = '#0f0a0f';
+                } else {
+                    cell.style.backgroundColor = '#444';
+                    cell.style.color = '#aaa';
+                }
+            }
+        }
+        document.getElementById('submit').addEventListener('click', function() {
+        let userGuess = Array.from(inputs).map(input => input.value.toUpperCase()).join('');
+
+        if (userGuess.length < 5) {
+            if (currentLanguage === 'eng') document.getElementById('info').textContent = 'Please fill all fields!';
+            else if (currentLanguage === 'esp') document.getElementById('info').textContent = '¡Por favor, completa todos los campos!';
+            else if (currentLanguage === 'pl') document.getElementById('info').textContent = 'Proszę wypełnić wszystkie pola!';
+            else if (currentLanguage === 'ger') document.getElementById('info').textContent = 'Bitte füllen Sie alle Felder aus!';
+            return;
+        }
+
+        const result = Array(5).fill('gray');
+        const targetArr = targetWord.split('');
+        const guessArr = userGuess.split('');
+        const used = Array(5).fill(false);
+
+        for (let i = 0; i < 5; i++) {
+            if (guessArr[i] === targetArr[i]) {
+                result[i] = 'green';
+                used[i] = true;
+            }
+        }
+        for (let i = 0; i < 5; i++) {
+            if (result[i] === 'green') continue;
+            for (let j = 0; j < 5; j++) {
+                if (!used[j] && guessArr[i] === targetArr[j]) {
+                    result[i] = 'yellow';
+                    used[j] = true;
+                    break;
+                }
+            }
+        }
+
+        attempts++;
+        updateKeyboard(userGuess, targetWord, result);
+        fillGuessRow(attempts, userGuess, result);
+
+        if (userGuess === targetWord) {
+            if (currentLanguage === 'eng') document.getElementById('info').textContent = `Correct in ${attempts} attempt${attempts > 1 ? 's' : ''}!`;
+            else if (currentLanguage === 'esp') document.getElementById('info').textContent = `¡Correcto en ${attempts} intento${attempts > 1 ? 's' : ''}!`;
+            else if (currentLanguage === 'pl') document.getElementById('info').textContent = `Poprawnie w ${attempts} prób${attempts > 1 ? 'ach' : 'ie'}!`;
+            else if (currentLanguage === 'ger') document.getElementById('info').textContent = `Richtig in ${attempts} Versuch${attempts > 1 ? 'en' : ''}!`;
+            endGame(true);
+        } else if (attempts >= MAX_ATTEMPTS_CURRENT) {
+            endGame(false);
+        } else {
+            if (currentLanguage === 'eng') document.getElementById('info').textContent = `Incorrect. ${MAX_ATTEMPTS_CURRENT - attempts} attempt${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 's' : ''} left!`;
+            else if (currentLanguage === 'esp') document.getElementById('info').textContent = `Incorrecto. ¡${MAX_ATTEMPTS_CURRENT - attempts} intento${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 's' : ''} restante!`;
+            else if (currentLanguage === 'pl') document.getElementById('info').textContent = `Niepoprawnie. Pozostało ${MAX_ATTEMPTS_CURRENT - attempts} prób${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 'y' : ''}!`;
+            else if (currentLanguage === 'ger') document.getElementById('info').textContent = `Falsch. Noch ${MAX_ATTEMPTS_CURRENT - attempts} Versuch${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 'e' : ''} übrig!`;
+
+            inputs.forEach(input => {
+                input.value = '';
+                input.style.backgroundColor = '';
+                input.style.color = '#f9ebf9';
+            });
+            showInputColors = false;
+            inputs[0].focus();
+        }
+    });
+
+        document.getElementById('NewGame').addEventListener('click', () => {
+            loadWords(currentLanguage).then(() => startGame());
+        });
+
+        const languageButtons = document.querySelectorAll('#languagebox .language');
+        const info = document.getElementById('info');
+        const languagebox = document.getElementById('languagebox');
+        const languageButton = document.getElementById('language');
+
+        function hideLanguages() {
+            for (let i = 1; i < languageButtons.length; i++) {
+                languageButtons[i].classList.add('hidden');
+                languageButtons[i].disabled = true;
+            }
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            info.textContent = translations[lang].info;
+            languageButton.textContent = translations[lang].name;
+            document.getElementById('NewGame').value = translations[lang].again;
+            document.getElementById('submit').value = translations[lang].button;
+            document.querySelector('.sideTitle').textContent = translations[lang].keybrd;
+            document.querySelectorAll('.sideTitle')[1].textContent = translations[lang].guesses;
+            document.getElementById('correctPosition').textContent = translations[lang].green;
+            document.getElementById('wrongPosition').textContent = translations[lang].yellow;
+            document.getElementById('notInColor').textContent = translations[lang].gray
+            hideLanguages();
+            updateSpecialKeys(lang);
+            loadWords(lang).then(() => startGame());
+        }
+
+        const specialKeys = {
+            eng: [],
+            pl:  ['Ą','Ć','Ę','Ł','Ń','Ó','Ś','Ż','Ź'],
+            esp: ['Á','É','Í','Ó','Ú','Ü','Ñ'],
+            ger: ['Ä','Ö','Ü','ß']
+        };
+
+        function updateSpecialKeys(lang) {
+            const keys = specialKeys[lang] || [];
+            for (let i = 1; i <= 9; i++) {
+                const el = document.getElementById('special' + i);
+                if (!el) continue;
+                const char = keys[i - 1] || '';
+                if (char) {
+                    el.textContent = char;
+                    el.style.display = '';
+                } else {
+                    el.textContent = '';
+                    el.style.display = 'none';
+                }
+            }
+        }
+
+        languageButton.addEventListener('mouseover', function() {
+            for (let i = 1; i < languageButtons.length; i++) {
+                const btn = languageButtons[i];
+                if (btn.id === currentLanguage) {
+                    btn.classList.add('hidden');
+                    btn.disabled = true;
+                } else {
+                    btn.classList.remove('hidden');
+                    btn.disabled = false;
+                }
+            }
+        });
+
+        languagebox.addEventListener('mouseleave', hideLanguages);
+
+        Object.keys(translations).forEach(lang => {
+            document.getElementById(lang).addEventListener('click', () => setLanguage(lang));
+        });
+
+        setLanguage('eng');
+        loadWords('eng').then(() => startGame());
+</script>
+<footer>© 2026 Igor 'x0derek' Karpowicz</footer>
+</body>
+</html>

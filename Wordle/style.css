@@ -1,0 +1,366 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #0f0a0f;
+    color: #f9ebf9;
+    min-height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+#main {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    width: 100%;
+    padding: 20px;
+    gap: 20px;
+}
+
+/* KEYBOARD */
+
+#keyboard {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: 10px;
+    gap: 6px;
+}
+
+.sideTitle {
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: #f89af8;
+    margin-bottom: 10px;
+    text-align: center;
+    border-bottom: 1px solid #f89af820;
+    width: 100%;
+    padding-bottom: 8px;
+}
+
+.keyRow {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+    width: 100%;
+}
+
+.key, .historykey {
+    width: 36px;
+    height: 36px;
+    background-color: #1a121a;
+    border: 1px solid #f9ebf940;
+    color: #f9ebf9;
+    font-size: 13px;
+    font-family: Arial, sans-serif;
+    cursor: default;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-radius: 3px;
+}
+
+.historykey {
+    width: 38px;
+    height: 38px;
+}
+
+.historyguess{
+    gap: 10px
+}
+
+/* KEYBOARD LEGEND */
+.keyLegend {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: auto;
+    padding: 0;
+    align-items: flex-start;
+}
+
+.legendItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: #f9ebf9aa;
+}
+
+.legendDot {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    border: 1px solid #f9ebf940;
+    flex-shrink: 0;
+}
+
+/* GAME */
+
+#game {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 10px;
+    position: relative;
+}
+
+/* LANGUAGE/DIFFICULTY */
+#languagebox, #difficultybox {
+    position: absolute;
+    top: 10px;
+    width: auto;
+    height: auto;
+    gap: 6px;
+    display: flex;
+    flex-direction: column;
+    background-color: #0f0a0f;
+    z-index: 10;
+}
+
+#languagebox {
+    right: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.language {
+    width: 80px;
+    height: 28px;
+    background-color: #0f0a0f;
+    border: 1px solid #f9ebf9;
+    color: #f9ebf9;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.15s ease;
+    letter-spacing: 1px;
+}
+
+.language:hover {
+    background-color: #f9ebf9;
+    color: #0f0a0f;
+}
+
+.language:active {
+    background-color: #f89af8;
+    color: #0f0a0f;
+}
+
+.box {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 50px;
+}
+
+#title {
+    text-align: center;
+    margin-bottom: 16px;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: #f89af8;
+}
+
+#box1 {
+    width: 260px;
+    height: 260px;
+    border: 2px solid #f9ebf9;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+#guessbox {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#info,
+#lastGuessInfo,
+#lastGuessText {
+    font-size: 17px;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+/* ATTEMPTS DOTS */
+#attemptsLeft {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.attemptDot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #f89af8;
+    border: 1px solid #f89af8;
+    transition: background-color 0.2s ease;
+}
+
+.attemptDotUsed {
+    background-color: transparent;
+    border-color: #f9ebf940;
+}
+
+#inputContainer {
+    display: flex;
+    gap: 10px;
+    margin: 10px 0;
+}
+
+.colorInput {
+    width: 38px;
+    height: 38px;
+    background-color: #1a121a;
+    border: 2px solid #f9ebf960;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+    color: #f9ebf9;
+    text-align: center;
+    font-size: 16px;
+    font-family: 'Courier New', monospace;
+    text-transform: uppercase;
+    border-radius: 3px;
+    outline: none;
+}
+
+.colorInput:focus {
+    border-color: #f89af8;
+}
+
+.r{
+    border-color: #ff0000;
+}
+
+.g{
+    border-color: #adff2f;
+}
+
+.b{
+    border-color: #0066ff;
+}
+
+#submit,
+#NewGame {
+    margin-top: 10px;
+    width: 110px;
+    height: 32px;
+    background-color: #0f0a0f;
+    border: 2px solid #f9ebf9;
+    color: #f9ebf9;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.15s ease;
+    letter-spacing: 1px;
+}
+
+#NewGame {
+    width: auto;
+}
+
+#submit:hover,
+#NewGame:hover {
+    background-color: #f9ebf9;
+    color: #0f0a0f;
+}
+
+#submit:active,
+#NewGame:active {
+    background-color: #f89af8;
+    color: #0f0a0f;
+}
+
+/* GUESS HISTORY */
+
+#right {
+    width: 30%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10px;
+    gap: 0;
+}
+
+#guessHistory {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    padding: 0 8px;
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+/* FOOTER */
+footer{
+    text-align: center;
+    padding: 10px;
+    font-size: 12px;
+    color: #f89af850;
+    letter-spacing: 2px;
+}
+
+/* SCROLLBAR */
+#guessHistory::-webkit-scrollbar {
+    width: 4px;
+}
+#guessHistory::-webkit-scrollbar-track {
+    background: #1a121a;
+}
+#guessHistory::-webkit-scrollbar-thumb {
+    background: #f89af8;
+    border-radius: 2px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+    #main {
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+    }
+
+    #keyboard, #game, #guessed {
+        width: 100%;
+        max-width: 500px;
+    }
+
+    .keyRow {
+        justify-content: center;
+    }
+
+    #guessHistory {
+        max-height: 300px;
+    }
+
+    #languagebox, #difficultybox {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+
+    .box {
+        padding-top: 10px;
+    }
+}

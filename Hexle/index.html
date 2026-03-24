@@ -1,0 +1,456 @@
+<!--
+Hexle - Color Guessing Game
+Copyright (C) 2026 Igor 'x0derek' Karpowicz
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Hexle</title>
+</head>
+<body>
+    <div id="main">
+
+        <!-- KEYBOARD  -->
+        <div id="keyboard">
+            <div class="sideTitle">KEYBOARD</div>
+            <div class="keyRow">
+                <button class="key" id="0" disabled>0</button>
+                <button class="key" id="1" disabled>1</button>
+                <button class="key" id="2" disabled>2</button>
+                <button class="key" id="3" disabled>3</button>
+                <button class="key" id="4" disabled>4</button>
+                <button class="key" id="5" disabled>5</button>
+                <button class="key" id="6" disabled>6</button>
+                <button class="key" id="7" disabled>7</button>
+                <button class="key" id="8" disabled>8</button>
+                <button class="key" id="9" disabled>9</button>
+            </div>
+            <div class="keyRow">
+                <button class="key" id="a" disabled>A</button>
+                <button class="key" id="b" disabled>B</button>
+                <button class="key" id="c" disabled>C</button>
+                <button class="key" id="d" disabled>D</button>
+                <button class="key" id="e" disabled>E</button>
+                <button class="key" id="f" disabled>F</button>
+            </div>
+            <div class="keyLegend">
+                <div class="legendItem"><span class="legendDot" style="background:#90EE90;"></span> <span id="correctPosition">Correct position</span></div>
+                <div class="legendItem"><span class="legendDot" style="background:#FFFF00;"></span> <span id="wrongPosition">Wrong position</span></div>
+                <div class="legendItem"><span class="legendDot" style="background:#D3D3D3;"></span> <span id="notInColor">Not in color</span></div>
+            </div>
+        </div>
+
+        <!-- GAME -->
+        <div id="game">
+            <div id="difficultybox">
+                <button id="difficultyBtn" class="language">NORMAL</button>
+                <button id="easy" class="language hidden">EASY</button>
+                <button id="normal" class="language hidden">NORMAL</button>
+                <button id="hard" class="language hidden">HARD</button>
+                <button id="insane" class="language hidden">INSANE</button>
+            </div>
+            <div id="languagebox">
+                <button id="language" class="language">ENG</button>
+                <button id="eng" class="language hidden">ENG</button>
+                <button id="esp" class="language hidden">ESP</button>
+                <button id="pl" class="language hidden">PL</button>
+                <button id="ger" class="language hidden">GER</button>
+            </div>
+            <div class="box">
+                <span id="title">Hexle</span>
+                <div id="box1"></div>
+                <div id="guessbox">
+                    <span id="info">Guess The Color</span>
+                    <div id="attemptsLeft"></div>
+                    <div id="inputContainer">
+                        <input type="text" class="colorInput r" maxlength="1" pattern="[0-9A-Fa-f]">
+                        <input type="text" class="colorInput r" maxlength="1" pattern="[0-9A-Fa-f]">
+                        <input type="text" class="colorInput g" maxlength="1" pattern="[0-9A-Fa-f]">
+                        <input type="text" class="colorInput g" maxlength="1" pattern="[0-9A-Fa-f]">
+                        <input type="text" class="colorInput b" maxlength="1" pattern="[0-9A-Fa-f]">
+                        <input type="text" class="colorInput b" maxlength="1" pattern="[0-9A-Fa-f]">
+                    </div>
+                    <input type="button" value="Submit" id="submit">
+                    <input type="button" value="Play Again" id="NewGame" style="display:none;">
+                </div>
+            </div>
+        </div>
+
+        <!-- GUESS HISTORY -->
+        <div id="guessed">
+            <div class="sideTitle">GUESSES</div>
+            <div id="guessHistory"></div>
+        </div>
+
+    </div>
+
+    <script>
+        const MAX_ATTEMPTS = 10;
+        let MAX_ATTEMPTS_CURRENT = 6;
+
+        let targetColor = '';
+        let attempts = 0;
+        let currentLanguage = 'eng';
+        let showInputColors = false;
+        const inputs = document.querySelectorAll('.colorInput');
+
+        function generateRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function updateAttemptsDisplay() {
+            const dots = document.getElementById('attemptsLeft');
+            dots.innerHTML = '';
+            for (let i = 0; i < MAX_ATTEMPTS_CURRENT; i++) {
+                const dot = document.createElement('span');
+                dot.className = 'attemptDot' + (i < attempts ? ' attemptDotUsed' : '');
+                dots.appendChild(dot);
+            }
+        }
+
+        function resetKeyboard() {
+            const hexChars = ['0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'];
+            hexChars.forEach(char => {
+                const el = document.getElementById(char);
+                if (el) {
+                    el.style.backgroundColor = '';
+                    el.style.color = '#f9ebf9';
+                }
+            });
+        }
+
+        function updateKeyboard(userGuessHex, targetHex) {
+            for (let i = 0; i < 6; i++) {
+                const char = userGuessHex[i].toLowerCase();
+                const el = document.getElementById(char);
+                if (!el) continue;
+
+                const currentBg = el.style.backgroundColor;
+                if (char === targetHex[i].toLowerCase()) {
+                    el.style.backgroundColor = '#90EE90';
+                    el.style.color = '#0f0a0f';
+                } else if (targetHex.toLowerCase().includes(char)) {
+                    if (currentBg !== '#90ee90') {
+                        el.style.backgroundColor = '#FFFF00';
+                        el.style.color = '#0f0a0f';
+                    }
+                } else {
+                    if (currentBg !== '#90ee90' && currentBg !== '#ffff00') {
+                        el.style.backgroundColor = '#D3D3D3';
+                        el.style.color = '#0f0a0f';
+                    }
+                }
+            }
+        }
+
+        function endGame(won) {
+            document.getElementById('submit').style.display = 'none';
+            document.getElementById('NewGame').style.display = 'block';
+            inputs.forEach(input => { input.disabled = true; });
+
+            if (!won) {
+                document.getElementById('info').textContent = `The color was ${targetColor}`;
+            }
+        }
+
+        function startGame() {
+            targetColor = generateRandomColor();
+            document.getElementById('box1').style.backgroundColor = targetColor;
+            attempts = 0;
+            showInputColors = false;
+            document.getElementById('info').textContent = translations[currentLanguage].info;
+            inputs.forEach(input => {
+                input.value = '';
+                input.style.backgroundColor = '';
+                input.style.color = '#f9ebf9';
+                input.disabled = false;
+            });
+            document.getElementById('submit').style.display = 'block';
+            document.getElementById('NewGame').style.display = 'none';
+            document.getElementById('guessHistory').innerHTML = '';
+            resetKeyboard();
+            updateAttemptsDisplay();
+            inputs[0].focus();
+        }
+
+        function updateInputColors() {
+            if (!showInputColors) return;
+            const targetValue = targetColor.substring(1);
+            inputs.forEach((input, index) => {
+                const char = input.value.toUpperCase();
+                if (!char) {
+                    input.style.backgroundColor = '';
+                    input.style.color = '#f9ebf9';
+                } else if (char === targetValue[index]) {
+                    input.style.backgroundColor = '#90EE90';
+                    input.style.color = '#0f0a0f';
+                } else if (targetValue.includes(char)) {
+                    input.style.backgroundColor = '#FFFF00';
+                    input.style.color = '#0f0a0f';
+                } else {
+                    input.style.backgroundColor = '#D3D3D3';
+                    input.style.color = '#0f0a0f';
+                }
+            });
+        }
+
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                const val = e.target.value.replace(/[^0-9A-Fa-f]/g, '');
+                e.target.value = val;
+                if (val && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+                updateInputColors();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !input.value && index > 0) {
+                    inputs[index - 1].focus();
+                    inputs[index - 1].value = '';
+                    updateInputColors();
+                } else if (e.key === 'Enter') {
+                    document.getElementById('submit').click();
+                }
+            });
+        });
+
+        const translations = {
+            eng: { info: 'Guess The Color', name: 'ENG', again: 'Play Again', button: 'Guess', keybrd: 'Keyboard', guesses: 'Guesses', green: 'Correct position', yellow: 'Wrong position', gray: 'Not in color' },
+            esp: { info: 'Adivina el color', name: 'ESP', again: 'Jugar De Nuevo', button: 'Adivinar', keybrd: 'Teclado', guesses: 'Intentos', green: 'Posición correcta', yellow: 'Posición incorrecta', gray: 'No en el color' },
+            pl: { info: 'Zgadnij kolor', name: 'PL', again: 'Zagraj Ponownie', button: 'Zgadnij', keybrd: 'Klawiatura', guesses: 'Próby', green: 'Poprawna pozycja', yellow: 'Błędna pozycja', gray: 'Nie w kolorze' },
+            ger: { info: 'Errate die Farbe', name: 'GER', again: 'Nohmal Spielen', button: 'Erraten', keybrd: 'Tastatur', guesses: 'Versuche', green: 'Richtige Position', yellow: 'Falsche Position', gray: 'Nicht in Farbe' }
+        };
+
+        function addGuessToHistory(userGuess, targetHex, attemptNum, isCorrect) {
+            const userHex = userGuess.substring(1);
+            const history = document.getElementById('guessHistory');
+
+            const entry = document.createElement('div');
+            entry.className = 'historyEntry' + (isCorrect ? ' historyCorrect' : '');
+
+            const swatch = document.createElement('div');
+            swatch.className = 'historySwatch';
+            swatch.style.backgroundColor = userGuess;
+
+            const hexDisplay = document.createElement('div');
+            hexDisplay.className = 'historyHex';
+
+            for (let i = 0; i < 6; i++) {
+                const charSpan = document.createElement('span');
+                charSpan.className = 'historyChar';
+                charSpan.textContent = userHex[i];
+                if (userHex[i] === targetHex[i]) {
+                    charSpan.style.backgroundColor = '#90EE90';
+                    charSpan.style.color = '#0f0a0f';
+                } else if (targetHex.includes(userHex[i])) {
+                    charSpan.style.backgroundColor = '#FFFF00';
+                    charSpan.style.color = '#0f0a0f';
+                } else {
+                    charSpan.style.backgroundColor = '#444';
+                    charSpan.style.color = '#aaa';
+                }
+                hexDisplay.appendChild(charSpan);
+            }
+
+            const attemptLabel = document.createElement('div');
+            attemptLabel.className = 'historyAttempt';
+            attemptLabel.textContent = '#' + attemptNum;
+
+            entry.appendChild(attemptLabel);
+            entry.appendChild(swatch);
+            entry.appendChild(hexDisplay);
+
+            history.insertBefore(entry, history.firstChild);
+        }
+
+        document.getElementById('submit').addEventListener('click', function() {
+
+            let userGuess = Array.from(inputs).map(input => input.value.toUpperCase()).join('');
+
+            if (userGuess.length < 6) {
+                if(currentLanguage === 'eng') {
+                    document.getElementById('info').textContent = 'Please fill all fields!';
+                } else if (currentLanguage === 'esp') {
+                    document.getElementById('info').textContent = '¡Por favor, completa todos los campos!';
+                } else if (currentLanguage === 'pl') {
+                    document.getElementById('info').textContent = 'Proszę wypełnić wszystkie pola!';
+                } else if (currentLanguage === 'ger') {
+                    document.getElementById('info').textContent = 'Bitte füllen Sie alle Felder aus!';
+                }
+                return;
+            }
+
+            showInputColors = true;
+            updateInputColors();
+
+
+            userGuess = '#' + userGuess;
+            attempts++;
+            updateAttemptsDisplay();
+
+            const targetHex = targetColor.substring(1).toUpperCase();
+            const userHex = userGuess.substring(1).toUpperCase();
+
+            updateKeyboard(userHex, targetHex);
+
+            if (userGuess === targetColor) {
+                if(currentLanguage === 'eng') {
+                    document.getElementById('info').textContent = `Correct in ${attempts} attempt${attempts > 1 ? 's' : ''}!`;
+                } else if (currentLanguage === 'esp') {
+                    document.getElementById('info').textContent = `¡Correcto en ${attempts} intento${attempts > 1 ? 's' : ''}!`;
+                } else if (currentLanguage === 'pl') {
+                    document.getElementById('info').textContent = `Poprawnie w ${attempts} prób${attempts > 1 ? 'ach' : 'ie'}!`;
+                } else if (currentLanguage === 'ger') {
+                    document.getElementById('info').textContent = `Richtig in ${attempts} Versuch${attempts > 1 ? 'en' : ''}!`;
+                }
+                addGuessToHistory(userGuess, targetHex, attempts, true);
+                endGame(true);
+            } else if (attempts >= MAX_ATTEMPTS_CURRENT) {
+                addGuessToHistory(userGuess, targetHex, attempts, false);
+                endGame(false);
+            } else {
+                if(currentLanguage === 'eng') {
+                    document.getElementById('info').textContent = `Incorrect. ${MAX_ATTEMPTS_CURRENT - attempts} attempt${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 's' : ''} left!`;
+                } else if (currentLanguage === 'esp') {
+                    document.getElementById('info').textContent = `Incorrecto. ¡${MAX_ATTEMPTS_CURRENT - attempts} intento${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 's' : ''} restante!`;
+                } else if (currentLanguage === 'pl') {
+                    document.getElementById('info').textContent = `Niepoprawnie. Pozostało ${MAX_ATTEMPTS_CURRENT - attempts} prób${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 'y' : ''}!`;
+                } else if (currentLanguage === 'ger') {
+                    document.getElementById('info').textContent = `Falsch. Noch ${MAX_ATTEMPTS_CURRENT - attempts} Versuch${MAX_ATTEMPTS_CURRENT - attempts > 1 ? 'e' : ''} übrig!`;
+                }
+                addGuessToHistory(userGuess, targetHex, attempts, false);
+
+                inputs.forEach(input => {
+                    input.value = '';
+                    input.style.backgroundColor = '';
+                    input.style.color = '#f9ebf9';
+                });
+                showInputColors = false;
+                inputs[0].focus();
+            }
+        });
+
+        document.getElementById('NewGame').addEventListener('click', startGame);
+
+        const languageButtons = document.querySelectorAll('#languagebox .language');
+        const info = document.getElementById('info');
+        const languagebox = document.getElementById('languagebox');
+        const languageButton = document.getElementById('language');
+
+        function hideLanguages() {
+            for (let i = 1; i < languageButtons.length; i++) {
+                languageButtons[i].classList.add('hidden');
+                languageButtons[i].disabled = true;
+            }
+        }
+
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            info.textContent = translations[lang].info;
+            languageButton.textContent = translations[lang].name;
+            document.getElementById('NewGame').value = translations[lang].again;
+            document.getElementById('submit').value = translations[lang].button;
+            document.querySelector('.sideTitle').textContent = translations[lang].keybrd;
+            document.querySelectorAll('.sideTitle')[1].textContent = translations[lang].guesses;
+            document.getElementById('correctPosition').textContent = translations[lang].green;
+            document.getElementById('wrongPosition').textContent = translations[lang].yellow;
+            document.getElementById('notInColor').textContent = translations[lang].gray
+            hideLanguages();
+        }
+
+        languageButton.addEventListener('mouseover', function() {
+            for (let i = 1; i < languageButtons.length; i++) {
+                const btn = languageButtons[i];
+                if (btn.id === currentLanguage) {
+                    btn.classList.add('hidden');
+                    btn.disabled = true;
+                } else {
+                    btn.classList.remove('hidden');
+                    btn.disabled = false;
+                }
+            }
+        });
+
+        languagebox.addEventListener('mouseleave', hideLanguages);
+
+        Object.keys(translations).forEach(lang => {
+            document.getElementById(lang).addEventListener('click', () => setLanguage(lang));
+        });
+
+        setLanguage('eng');
+
+        // DIFFICULTY
+        const difficultySettings = {
+            easy:       { attempts: 10, label: 'EASY' },
+            normal:     { attempts: 6, label: 'NORMAL' },
+            hard:       { attempts: 4,  label: 'HARD' },
+            insane: { attempts: 2, label: "INSANE" }
+        };
+        let currentDifficulty = 'normal';
+
+        const difficultyBtn = document.getElementById('difficultyBtn');
+        const difficultybox = document.getElementById('difficultybox');
+        const difficultyOptionIds = ['easy', 'normal', 'hard', 'insane'];
+
+        function hideDifficulties() {
+            difficultyOptionIds.forEach(id => {
+                const btn = document.getElementById(id);
+                btn.classList.add('hidden');
+                btn.disabled = true;
+            });
+        }
+
+        difficultyBtn.addEventListener('mouseover', function() {
+            difficultyOptionIds.forEach(id => {
+                const btn = document.getElementById(id);
+                if (id === currentDifficulty) {
+                    btn.classList.add('hidden');
+                    btn.disabled = true;
+                } else {
+                    btn.classList.remove('hidden');
+                    btn.disabled = false;
+                }
+            });
+        });
+
+        difficultybox.addEventListener('mouseleave', hideDifficulties);
+
+        const difficultyColors = {
+            easy:   '#90EE90',
+            normal: '#FFFF00',
+            hard:   '#FFA500',
+            insane: '#FF0000'
+        };
+
+        difficultyOptionIds.forEach(id => {
+            document.getElementById(id).addEventListener('click', () => {
+                currentDifficulty = id;
+                MAX_ATTEMPTS_CURRENT = difficultySettings[id].attempts;
+                difficultyBtn.textContent = difficultySettings[id].label;
+                difficultyBtn.style.borderColor = difficultyColors[id];
+                hideDifficulties();
+                startGame();
+            });
+        });
+
+        hideDifficulties();
+        difficultyBtn.style.borderColor = difficultyColors[currentDifficulty];
+        startGame();
+    </script>
+<footer>© 2026 Igor 'x0derek' Karpowicz</footer>
+</body>
+</html>
