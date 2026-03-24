@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Warstwa_2" data-name="Warstwa 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 171.24 78.26">
+  <defs>
+    <style>
+      .cls-1 {
+        letter-spacing: 0em;
+      }
+
+      .cls-1, .cls-2, .cls-3 {
+        font-size: 48px;
+      }
+
+      .cls-4 {
+        font-size: 72px;
+      }
+
+      .cls-2 {
+        letter-spacing: 0em;
+      }
+
+      .cls-5 {
+        fill: #1d1d1b;
+        font-family: MyriadPro-Regular, 'Myriad Pro';
+      }
+    </style>
+  </defs>
+  <g id="Warstwa_1-2" data-name="Warstwa 1">
+    <text class="cls-5" transform="translate(0 60.26)"><tspan class="cls-4" x="0" y="0">W</tspan><tspan class="cls-3" x="60.91" y="0">o</tspan><tspan class="cls-1" x="87.26" y="0">r</tspan><tspan class="cls-2" x="102.48" y="0">dle</tspan></text>
+  </g>
+</svg>
