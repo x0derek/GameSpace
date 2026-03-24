@@ -1,107 +1,121 @@
 *{
     overflow: hidden;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 body{
-font-family: Arial;
-text-align:center;
-margin:0;
-min-height:100vh;
-
-/* gradient tła */
-
-background: linear-gradient(135deg,#ffe9c6,#ffd3a5,#ffb88c);
-
-/* pattern */
-
-background-image:
-radial-gradient(circle at 20% 20%, rgba(255,255,255,0.2) 2px, transparent 2px),
-radial-gradient(circle at 80% 40%, rgba(255,255,255,0.15) 2px, transparent 2px),
-radial-gradient(circle at 40% 80%, rgba(255,255,255,0.15) 2px, transparent 2px);
-
-background-size: 120px 120px;
-
-animation: bgMove 20s linear infinite;
+    font-family: 'Comic Sans MS', Arial, sans-serif;
+    text-align: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg,#ffe9c6,#ffd3a5,#ffb88c);
+    background-image:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.2) 2px, transparent 2px),
+        radial-gradient(circle at 80% 40%, rgba(255,255,255,0.15) 2px, transparent 2px),
+        radial-gradient(circle at 40% 80%, rgba(255,255,255,0.15) 2px, transparent 2px);
+    background-size: 120px 120px;
+    animation: bgMove 20s linear infinite;
 }
 
-/* animacja tła */
-
-@keyframes bgMove{
-0%{
-background-position:0 0,0 0,0 0;
-}
-100%{
-background-position:200px 200px, -200px 200px, 200px -200px;
-}
-}
-
+/* Top Bar */
 .topBar{
-font-size:24px;
-margin:20px;
+    font-size: 28px;
+    margin: 20px;
+    font-weight: bold;
+    color: #333;
+    text-shadow: 1px 1px 2px #fff;
 }
 
+/* Game Layout */
 .game{
-display:flex;
-justify-content:center;
-gap:50px;
+    display:flex;
+    justify-content:center;
+    gap: 60px;
 }
 
+/* Main Button */
 #Button{
-font-size:80px;
-border:none;
-background:none;
-cursor:pointer;
-transition:transform 0.1s;
+    font-size: 100px;
+    border:none;
+    background:none;
+    cursor:pointer;
+    transition: transform 0.1s, filter 0.1s;
 }
-
+#Button:hover{
+    filter: drop-shadow(2px 4px 4px #888);
+}
 #Button.pop{
-transform:scale(1.2);
+    transform: scale(1.3) rotate(-10deg);
 }
 
+/* Shop Panel */
 .shopPanel{
-background:white;
-padding:20px;
-border-radius:10px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
+    background:white;
+    padding: 25px;
+    border-radius:15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    transition: transform 0.2s;
+}
+.shopPanel:hover{
+    transform: scale(1.05);
 }
 
+/* Upgrade Items */
 .upgrade{
-margin:10px;
+    margin: 15px;
+    font-size: 18px;
+}
+.upgrade button{
+    margin-left: 10px;
+    padding: 6px 12px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    background:#ffb88c;
+    color:white;
+    font-weight:bold;
+    transition: background 0.2s, transform 0.1s;
+}
+.upgrade button:hover{
+    background:#ff8c42;
+    transform: scale(1.1);
 }
 
-/* popup */
-
+/* Popup */
 #popup{
-position:absolute;
-background:rgba(255,255,255,0.95);
-border:1px solid #ccc;
-padding:8px 12px;
-border-radius:6px;
-box-shadow:0 2px 10px rgba(0,0,0,0.1);
-pointer-events:none;
-opacity:0;
-transition:opacity 0.2s;
+    position:absolute;
+    background: rgba(255,255,255,0.95);
+    border:1px solid #ccc;
+    padding: 8px 12px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    pointer-events:none;
+    opacity:0;
+    transition:opacity 0.2s, transform 0.2s;
 }
 
-/* lecący tekst */
-
+/* Floating Text */
 .floating{
-position:absolute;
-font-weight:bold;
-color:#4caf50;
-pointer-events:none;
-animation:floatUp 1s forwards;
+    position:absolute;
+    font-weight:bold;
+    color:#4caf50;
+    pointer-events:none;
+    font-size: 22px;
+    animation: floatUp 1s forwards, fadeColor 1s forwards;
 }
 
 @keyframes floatUp{
-
-0%{
-opacity:1;
-transform:translateY(0);
+    0%{ opacity:1; transform: translateY(0) scale(1); }
+    100%{ opacity:0; transform: translateY(-60px) scale(1.3); }
 }
 
-100%{
-opacity:0;
-transform:translateY(-50px);
+@keyframes fadeColor{
+    0%{ color:#4caf50; }
+    100%{ color:#ff5722; }
 }
 
+/* Background Animation */
+@keyframes bgMove{
+    0%{ background-position:0 0,0 0,0 0; }
+    100%{ background-position:200px 200px, -200px 200px, 200px -200px; }
 }
