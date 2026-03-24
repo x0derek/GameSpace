@@ -1,30 +1,99 @@
-body{
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
     background-color: #0f0a0f;
     color: #f9ebf9;
     min-height: 100vh;
-    margin: 0;
     font-family: Arial, sans-serif;
-    overflow-x: hidden;
     display: flex;
     flex-direction: column;
 }
 
-#main {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-    width: 100%;
-    padding: 20px;
-    gap: 20px;
+header {
+    text-align: center;
+    padding: 48px 20px 32px;
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 2px;
 }
 
-/* FOOTER */
-footer{
+#main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    padding: 20px 48px 40px;
+}
+
+#title {
+    width: 300px;
+    text-align: center;
+    font-weight: bolder;
+    margin: 14px;
+    font-size: 28px;
+    letter-spacing: 4px;
+    color: #f89af8;
+    border-bottom: 1px solid #f89af820;
+    padding-bottom: 7px;
+}
+
+.name{
+    width: 190vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    background: #f9ebf9;
+    border-radius: 16px;
+    aspect-ratio: 4/3;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-decoration: none;
+    color: #0f0a0f;
+    font-size: 13px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px #0f0a0f;
+}
+
+img{
+    width: 90%;
+    height: 90%;
+}
+
+footer {
     text-align: center;
     padding: 10px;
     font-size: 12px;
     color: #f89af850;
     letter-spacing: 2px;
+}
+
+@media (max-width: 800px) {
+    #main { grid-template-columns: repeat(2, 1fr); padding: 20px 24px 32px; }
+}
+@media (max-width: 500px) {
+    #main { grid-template-columns: 1fr; }
+}
+
+::-webkit-scrollbar {
+  width: 4px; 
+  height: 4px; 
+}
+
+::-webkit-scrollbar-track {
+  background: #0f0a0f;
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #f89af8;
+  border-radius: 6px;
 }
