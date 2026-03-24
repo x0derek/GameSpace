@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+    <div id="main">
+        <span id="title">QR CODE GENERATOR</span>
+
+        <div id="card">
+            <div class="input-row">
+                <input type="text" id="input" placeholder="tekst lub URL..." />
+                <button id="btn">GENERUJ</button>
+            </div>
+
+            <div id="qr-wrapper">
+                <div class="divider"></div>
+                <div id="qrcode"></div>
+                <button id="download-btn">POBIERZ PNG</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>© 2026 Igor 'x0derek' Karpowicz</footer>
+
+    <script>
+        const input = document.getElementById('input');
+        const btn = document.getElementById('btn');
+        const qrDiv = document.getElementById('qrcode');
+        const qrWrapper = document.getElementById('qr-wrapper');
+        const downloadBtn = document.getElementById('download-btn');
+
+        function generate() {
+            const text = input.value.trim();
+            if (!text) return;
+
+            qrDiv.innerHTML = '';
+            qrWrapper.classList.remove('visible');
+
+            new QRCode(qrDiv, {
+                text,
+                width: 220,
+                height: 220,
+                colorDark: '#0f0a0f',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            setTimeout(() => qrWrapper.classList.add('visible'), 50);
+        }
+
+        btn.addEventListener('click', generate);
+        input.addEventListener('keydown', e => { if (e.key === 'Enter') generate(); });
+
+        downloadBtn.addEventListener('click', () => {
+            const canvas = qrDiv.querySelector('canvas');
+            if (!canvas) return;
+            const link = document.createElement('a');
+            link.download = 'qrcode.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        });
+    </script>
+</body>
+</html>
