@@ -11,18 +11,19 @@ ZAMYSŁ POCZĄTKOWY:
 Każdy tworzy 3 minigry, które na końcu zostaną dodane do strony głównej (lobby)
 
 ILOŚĆ MINIGIER:
-Igor: 2 + 2*CSS
-Kuba: 6
+Igor: 3 + 2*CSS
+Kuba: 3
 Józek: 2
 
 MINIGRY:
 
 Poopy Cliker - Kuba
-OldSchool Clicker - Józek
+Clicker - Józek
 Little Alchemy - Kuba
 Password Game - Kuba
 Hexle - Igor
 Wordle - Igor
-Numerle - Kuba + CSS Igor
-Datele - Kuba + CSS Igor
 Snake - Józek
+QR Code Generator - Igor
+
+STRONA GŁÓWNA: IGOR
