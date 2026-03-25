@@ -11,7 +11,7 @@ ZAMYSŁ POCZĄTKOWY:
 Każdy tworzy 3 minigry, które na końcu zostaną dodane do strony głównej (lobby)
 
 ILOŚĆ MINIGIER:
-Igor: 3 + 2*CSS
+Igor: 3
 Kuba: 3
 Józek: 2
 
