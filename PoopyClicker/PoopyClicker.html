@@ -14,35 +14,46 @@
 
 <div class="game">
 
-<div class="leftPanel">
-<div id="orbitContainer">
-<button id="Button">💩</button>
-</div>
-</div>
+    <div class="leftPanel">
+        <div id="orbitContainer">
+            <button id="Button">💩</button>
+        </div>
+    </div>
 
-<div class="shopPanel">
+    <div class="shopPanel">
+        <h2>🧻 Sklep</h2>
 
-<h2>🧻 Sklep</h2>
+        <div class="upgrade">
+            <span id="Up1_Cena">🚽 Auto Kupa - 20</span>
+            <button id="Up1">Kup</button>
+        </div>
 
-<div class="upgrade">
-<span id="Up1_Cena">🚽 Auto Kupa - 20</span>
-<button id="Up1">Kup</button>
-</div>
+        <div class="upgrade">
+            <span id="Up2_Cena">🧻 Mega Podtarcie - 50</span>
+            <button id="Up2">Kup</button>
+        </div>
 
-<div class="upgrade">
-<span id="Up2_Cena">🧻 Mega Podtarcie - 50</span>
-<button id="Up2">Kup</button>
-</div>
+        <div class="upgrade">
+            <span id="Up3_Cena">💨 Turbo Flush - 200</span>
+            <button id="Up3">Kup</button>
+        </div>
 
-</div>
+        <div class="upgrade">
+            <span id="Up4_Cena">🧼 Ultra Clean - 500</span>
+            <button id="Up4">Kup</button>
+        </div>
+
+    </div>
 </div>
 
 <div id="popup">Za mało pieniędzy</div>
 
 <script>
-    let Money = 0
+let Money = 0
 let Up1_Price = 20
 let Up2_Price = 50
+let Up3_Price = 200
+let Up4_Price = 500
 
 let multy = 1
 let auto = 0
@@ -51,133 +62,111 @@ const moneyText = document.getElementById("Money")
 const button = document.getElementById("Button")
 
 function update(){
-moneyText.textContent = Money
+    moneyText.textContent = Money
 }
 
 /* popup brak pieniędzy */
-
 function popup(e){
-
-const popup = document.getElementById("popup")
-
-popup.style.left = (e.clientX + 10) + "px"
-popup.style.top = (e.clientY - 10) + "px"
-
-popup.style.opacity = 1
-
-setTimeout(()=>{
-popup.style.opacity = 0
-},1000)
-
+    const popup = document.getElementById("popup")
+    popup.style.left = (e.clientX + 10) + "px"
+    popup.style.top = (e.clientY - 10) + "px"
+    popup.style.opacity = 1
+    setTimeout(()=>{
+        popup.style.opacity = 0
+    },1000)
 }
 
 /* lecący tekst */
-
 function floatingText(x,y,text){
-
-const el = document.createElement("div")
-
-el.className = "floating"
-el.innerText = text
-
-el.style.left = x + "px"
-el.style.top = y + "px"
-
-document.body.appendChild(el)
-
-setTimeout(()=>{
-el.remove()
-},1000)
-
+    const el = document.createElement("div")
+    el.className = "floating"
+    el.innerText = text
+    el.style.left = x + "px"
+    el.style.top = y + "px"
+    document.body.appendChild(el)
+    setTimeout(()=>{
+        el.remove()
+    },1000)
 }
 
 /* kliknięcie */
-
 button.onclick = (e)=>{
-
-Money += multy
-update()
-
-floatingText(e.clientX,e.clientY,"+"+multy+" 💩")
-
-button.classList.add("pop")
-
-setTimeout(()=>{
-button.classList.remove("pop")
-},100)
-
+    Money += multy
+    update()
+    floatingText(e.clientX,e.clientY,"+"+multy+" 💩")
+    button.classList.add("pop")
+    setTimeout(()=>{
+        button.classList.remove("pop")
+    },100)
 }
 
 /* spawn rolki */
-
 function spawnToilet(){
-
-const tp = document.createElement("div")
-
-tp.className = "tp"
-tp.innerText = "🧻"
-
-const angle = Math.random()*360
-
-tp.style.transform = `rotate(${angle}deg) translateX(10px)`
-
-document.getElementById("orbitContainer").appendChild(tp)
-
+    const tp = document.createElement("div")
+    tp.className = "tp"
+    tp.innerText = "🧻"
+    const angle = Math.random()*360
+    const radius = 30 + Math.random()*20
+    tp.style.transform = `rotate(${angle}deg) translateX(${radius}px)`
+    document.getElementById("orbitContainer").appendChild(tp)
 }
 
-/* upgrade auto */
-
+/* Upgrade 1 - Auto Kupa */
 document.getElementById("Up1").onclick = (e)=>{
-
-if(Money >= Up1_Price){
-
-Money -= Up1_Price
-auto++
-
-spawnToilet()
-
-Up1_Price = Math.floor(Up1_Price * 1.6)
-
-document.getElementById("Up1_Cena").innerText =
-"🚽 Auto Kupa - " + Up1_Price
-
-update()
-
-}else{
-popup(e)
+    if(Money >= Up1_Price){
+        Money -= Up1_Price
+        auto++
+        spawnToilet()
+        Up1_Price = Math.floor(Up1_Price * 1.6)
+        document.getElementById("Up1_Cena").innerText =
+        "🚽 Auto Kupa - " + Up1_Price
+        update()
+    }else{ popup(e) }
 }
 
-}
-
-/* upgrade multiplikatora */
-
+/* Upgrade 2 - Mega Podtarcie */
 document.getElementById("Up2").onclick = (e)=>{
-
-if(Money >= Up2_Price){
-
-Money -= Up2_Price
-multy++
-
-Up2_Price = Math.floor(Up2_Price * 2)
-
-document.getElementById("Up2_Cena").innerText =
-"🧻 Mega Podtarcie - " + Up2_Price
-
-update()
-
-}else{
-popup(e)
+    if(Money >= Up2_Price){
+        Money -= Up2_Price
+        multy++
+        Up2_Price = Math.floor(Up2_Price * 2)
+        document.getElementById("Up2_Cena").innerText =
+        "🧻 Mega Podtarcie - " + Up2_Price
+        update()
+    }else{ popup(e) }
 }
 
+/* Upgrade 3 - Turbo Flush */
+document.getElementById("Up3").onclick = (e)=>{
+    if(Money >= Up3_Price){
+        Money -= Up3_Price
+        auto += 5
+        spawnToilet()
+        spawnToilet()
+        spawnToilet()
+        Up3_Price = Math.floor(Up3_Price * 2)
+        document.getElementById("Up3_Cena").innerText =
+        "💨 Turbo Flush - " + Up3_Price
+        update()
+    }else{ popup(e) }
+}
+
+/* Upgrade 4 - Ultra Clean */
+document.getElementById("Up4").onclick = (e)=>{
+    if(Money >= Up4_Price){
+        Money -= Up4_Price
+        multy += 5
+        Up4_Price = Math.floor(Up4_Price * 2.5)
+        document.getElementById("Up4_Cena").innerText =
+        "🧼 Ultra Clean - " + Up4_Price
+        update()
+    }else{ popup(e) }
 }
 
 /* auto click */
-
 setInterval(()=>{
-
-Money += auto * multy
-update()
-
+    Money += auto * multy
+    update()
 },1000)
 </script>
 

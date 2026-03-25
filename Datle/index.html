@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datele</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="main">
+
+<!-- KEYBOARD -->
+<div id="keyboard">
+    <div class="sideTitle">KEYBOARD</div>
+    <div class="keyRow">
+        <button class="key" id="0" disabled>0</button>
+        <button class="key" id="1" disabled>1</button>
+        <button class="key" id="2" disabled>2</button>
+        <button class="key" id="3" disabled>3</button>
+        <button class="key" id="4" disabled>4</button>
+        <button class="key" id="5" disabled>5</button>
+        <button class="key" id="6" disabled>6</button>
+        <button class="key" id="7" disabled>7</button>
+        <button class="key" id="8" disabled>8</button>
+        <button class="key" id="9" disabled>9</button>
+    </div>
+
+    <div class="keyLegend">
+        <div class="legendItem"><span class="legendDot" style="background:#90EE90;"></span> Correct position</div>
+        <div class="legendItem"><span class="legendDot" style="background:#FFFF00;"></span> Wrong position</div>
+        <div class="legendItem"><span class="legendDot" style="background:#D3D3D3;"></span> Not in date</div>
+    </div>
+</div>
+
+<!-- GAME -->
+<div id="game">
+    <div class="box">
+        <span id="title">Datele</span>
+
+        <div id="guessbox">
+            <span id="info">Guess The Date (DD-MM-YYYY)</span>
+            <div id="attemptsLeft"></div>
+
+            <div id="inputContainer">
+                <!-- DD -->
+                <input type="text" class="colorInput" maxlength="1">
+                <input type="text" class="colorInput" maxlength="1">
+
+                <!-- MM -->
+                <input type="text" class="colorInput" maxlength="1">
+                <input type="text" class="colorInput" maxlength="1">
+
+                <!-- YYYY -->
+                <input type="text" class="colorInput" maxlength="1">
+                <input type="text" class="colorInput" maxlength="1">
+                <input type="text" class="colorInput" maxlength="1">
+                <input type="text" class="colorInput" maxlength="1">
+            </div>
+
+            <input type="button" value="Guess" id="submit">
+            <input type="button" value="Play Again" id="NewGame" style="display:none;">
+        </div>
+    </div>
+</div>
+
+<!-- HISTORY -->
+<div id="guessed">
+    <div class="sideTitle">GUESSES</div>
+    <div id="guessHistory"></div>
+</div>
+
+</div>
+
+<script>
+const MAX_ATTEMPTS = 6;
+
+let targetDate = '';
+let attempts = 0;
+let showInputColors = false;
+
+const inputs = document.querySelectorAll('.colorInput');
+
+// Generate valid date
+function generateRandomDate() {
+    const start = new Date(2000, 0, 1);
+    const end = new Date(2030, 11, 31);
+
+    const randomDate = new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
+
+    const dd = String(randomDate.getDate()).padStart(2, '0');
+    const mm = String(randomDate.getMonth() + 1).padStart(2, '0');
+    const yyyy = randomDate.getFullYear();
+
+    return dd + mm + yyyy;
+}
+
+function updateAttemptsDisplay() {
+    const dots = document.getElementById('attemptsLeft');
+    dots.innerHTML = '';
+    for (let i = 0; i < MAX_ATTEMPTS; i++) {
+        const dot = document.createElement('span');
+        dot.className = 'attemptDot' + (i < attempts ? ' attemptDotUsed' : '');
+        dots.appendChild(dot);
+    }
+}
+
+function startGame() {
+    targetDate = generateRandomDate();
+    attempts = 0;
+    showInputColors = false;
+
+    document.getElementById('info').textContent = 'Guess The Date (DD-MM-YYYY)';
+    document.getElementById('guessHistory').innerHTML = '';
+
+    inputs.forEach(input => {
+        input.value = '';
+        input.style.backgroundColor = '';
+        input.disabled = false;
+    });
+
+    document.getElementById('submit').style.display = 'block';
+    document.getElementById('NewGame').style.display = 'none';
+
+    updateAttemptsDisplay();
+    inputs[0].focus();
+}
+
+function updateInputColors() {
+    if (!showInputColors) return;
+
+    inputs.forEach((input, i) => {
+        const char = input.value;
+
+        if (!char) {
+            input.style.backgroundColor = '';
+        } else if (char === targetDate[i]) {
+            input.style.backgroundColor = '#90EE90';
+        } else if (targetDate.includes(char)) {
+            input.style.backgroundColor = '#FFFF00';
+        } else {
+            input.style.backgroundColor = '#D3D3D3';
+        }
+    });
+}
+
+inputs.forEach((input, index) => {
+    input.addEventListener('input', (e) => {
+        const val = e.target.value.replace(/[^0-9]/g, '');
+        e.target.value = val;
+
+        if (val && index < inputs.length - 1) {
+            inputs[index + 1].focus();
+        }
+
+        updateInputColors();
+    });
+
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && index > 0) {
+            inputs[index - 1].focus();
+        } else if (e.key === 'Enter') {
+            document.getElementById('submit').click();
+        }
+    });
+});
+
+function isValidDate(str) {
+    const dd = parseInt(str.substring(0,2));
+    const mm = parseInt(str.substring(2,4));
+    const yyyy = parseInt(str.substring(4,8));
+
+    const d = new Date(yyyy, mm - 1, dd);
+
+    return d.getFullYear() === yyyy &&
+           d.getMonth() === mm - 1 &&
+           d.getDate() === dd;
+}
+
+function addGuessToHistory(user) {
+    const history = document.getElementById('guessHistory');
+    const entry = document.createElement('div');
+
+    for (let i = 0; i < 8; i++) {
+        const span = document.createElement('span');
+        span.className = 'historyChar';
+        span.textContent = user[i];
+
+        if (user[i] === targetDate[i]) {
+            span.style.backgroundColor = '#90EE90';
+        } else if (targetDate.includes(user[i])) {
+            span.style.backgroundColor = '#FFFF00';
+        } else {
+            span.style.backgroundColor = '#444';
+            span.style.color = '#aaa';
+        }
+
+        entry.appendChild(span);
+    }
+
+    history.prepend(entry);
+}
+
+function endGame(won) {
+    document.getElementById('submit').style.display = 'none';
+    document.getElementById('NewGame').style.display = 'block';
+    inputs.forEach(i => i.disabled = true);
+
+    if (!won) {
+        const formatted = `${targetDate.slice(0,2)}-${targetDate.slice(2,4)}-${targetDate.slice(4)}`;
+        document.getElementById('info').textContent = `The date was ${formatted}`;
+    }
+}
+
+document.getElementById('submit').addEventListener('click', () => {
+
+    let guess = Array.from(inputs).map(i => i.value).join('');
+
+    if (guess.length < 8) {
+        document.getElementById('info').textContent = 'Fill all fields!';
+        return;
+    }
+
+    if (!isValidDate(guess)) {
+        document.getElementById('info').textContent = 'Invalid date!';
+        return;
+    }
+
+    showInputColors = true;
+    updateInputColors();
+
+    attempts++;
+    updateAttemptsDisplay();
+
+    if (guess === targetDate) {
+        document.getElementById('info').textContent = `Correct in ${attempts}!`;
+        addGuessToHistory(guess);
+        endGame(true);
+    } else if (attempts >= MAX_ATTEMPTS) {
+        addGuessToHistory(guess);
+        endGame(false);
+    } else {
+        document.getElementById('info').textContent = `${MAX_ATTEMPTS - attempts} attempts left`;
+        addGuessToHistory(guess);
+
+        inputs.forEach(i => {
+            i.value = '';
+            i.style.backgroundColor = '';
+        });
+
+        showInputColors = false;
+        inputs[0].focus();
+    }
+});
+
+document.getElementById('NewGame').addEventListener('click', startGame);
+
+startGame();
+</script>
+
+</body>
+</html>
