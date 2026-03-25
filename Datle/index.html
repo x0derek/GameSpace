@@ -36,7 +36,6 @@
 <div id="game">
     <div class="box">
         <span id="title">Datele</span>
-        <div id="box1"></div>
 
         <div id="guessbox">
             <span id="info">Guess The Date (DD-MM-YYYY)</span>
@@ -81,7 +80,7 @@ let showInputColors = false;
 
 const inputs = document.querySelectorAll('.colorInput');
 
-// ✅ Generate valid date
+// Generate valid date
 function generateRandomDate() {
     const start = new Date(2000, 0, 1);
     const end = new Date(2030, 11, 31);
