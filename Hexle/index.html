@@ -94,7 +94,7 @@ by the Free Software Foundation, either version 3 of the License, or
 
     <script>
         const MAX_ATTEMPTS = 10;
-        let MAX_ATTEMPTS_CURRENT = 6;
+        let MAX_ATTEMPTS_CURRENT = 10;
 
         let targetColor = '';
         let attempts = 0;
@@ -132,17 +132,44 @@ by the Free Software Foundation, either version 3 of the License, or
             });
         }
 
-        function updateKeyboard(userGuessHex, targetHex) {
+        function evaluateGuess(userHex, targetHex) {
+            const result = Array(6).fill('gray');
+            const targetCount = {};
+
             for (let i = 0; i < 6; i++) {
-                const char = userGuessHex[i].toLowerCase();
+                if (userHex[i] === targetHex[i]) {
+                    result[i] = 'green';
+                } else {
+                    targetCount[targetHex[i]] = (targetCount[targetHex[i]] || 0) + 1;
+                }
+            }
+
+            for (let i = 0; i < 6; i++) {
+                if (result[i] === 'green') continue;
+                const c = userHex[i];
+                if (targetCount[c] > 0) {
+                    result[i] = 'yellow';
+                    targetCount[c]--;
+                }
+            }
+
+            return result;
+        }
+
+        function updateKeyboard(userHex, targetHex) {
+            const result = evaluateGuess(userHex, targetHex);
+
+            for (let i = 0; i < 6; i++) {
+                const char = userHex[i].toLowerCase();
                 const el = document.getElementById(char);
                 if (!el) continue;
 
                 const currentBg = el.style.backgroundColor;
-                if (char === targetHex[i].toLowerCase()) {
+
+                if (result[i] === 'green') {
                     el.style.backgroundColor = '#90EE90';
                     el.style.color = '#0f0a0f';
-                } else if (targetHex.toLowerCase().includes(char)) {
+                } else if (result[i] === 'yellow') {
                     if (currentBg !== '#90ee90') {
                         el.style.backgroundColor = '#FFFF00';
                         el.style.color = '#0f0a0f';
@@ -188,16 +215,26 @@ by the Free Software Foundation, either version 3 of the License, or
 
         function updateInputColors() {
             if (!showInputColors) return;
-            const targetValue = targetColor.substring(1);
+            const targetHex = targetColor.substring(1).toUpperCase();
+            const userHex = Array.from(inputs).map(input => input.value.toUpperCase());
+
+            if (userHex.some(c => !c)) {
+                inputs.forEach(input => {
+                    if (!input.value) {
+                        input.style.backgroundColor = '';
+                        input.style.color = '#f9ebf9';
+                    }
+                });
+                return;
+            }
+
+            const result = evaluateGuess(userHex.join(''), targetHex);
+
             inputs.forEach((input, index) => {
-                const char = input.value.toUpperCase();
-                if (!char) {
-                    input.style.backgroundColor = '';
-                    input.style.color = '#f9ebf9';
-                } else if (char === targetValue[index]) {
+                if (result[index] === 'green') {
                     input.style.backgroundColor = '#90EE90';
                     input.style.color = '#0f0a0f';
-                } else if (targetValue.includes(char)) {
+                } else if (result[index] === 'yellow') {
                     input.style.backgroundColor = '#FFFF00';
                     input.style.color = '#0f0a0f';
                 } else {
@@ -229,15 +266,17 @@ by the Free Software Foundation, either version 3 of the License, or
         });
 
         const translations = {
-            eng: { info: 'Guess The Color', name: 'ENG', again: 'Play Again', button: 'Guess', keybrd: 'Keyboard', guesses: 'Guesses', green: 'Correct position', yellow: 'Wrong position', gray: 'Not in color' },
-            esp: { info: 'Adivina el color', name: 'ESP', again: 'Jugar De Nuevo', button: 'Adivinar', keybrd: 'Teclado', guesses: 'Intentos', green: 'Posición correcta', yellow: 'Posición incorrecta', gray: 'No en el color' },
-            pl: { info: 'Zgadnij kolor', name: 'PL', again: 'Zagraj Ponownie', button: 'Zgadnij', keybrd: 'Klawiatura', guesses: 'Próby', green: 'Poprawna pozycja', yellow: 'Błędna pozycja', gray: 'Nie w kolorze' },
-            ger: { info: 'Errate die Farbe', name: 'GER', again: 'Nohmal Spielen', button: 'Erraten', keybrd: 'Tastatur', guesses: 'Versuche', green: 'Richtige Position', yellow: 'Falsche Position', gray: 'Nicht in Farbe' }
+            eng: { info: 'Guess The Color', name: 'ENG', button: 'Guess', keybrd: 'Keyboard', guesses: 'Guesses', green: 'Correct position', yellow: 'Wrong position', gray: 'Not in color' },
+            esp: { info: 'Adivina el color', name: 'ESP', button: 'Adivinar', keybrd: 'Teclado', guesses: 'Intentos', green: 'Posición correcta', yellow: 'Posición incorrecta', gray: 'No en el color' },
+            pl: { info: 'Zgadnij kolor', name: 'PL', button: 'Zgadnij', keybrd: 'Klawiatura', guesses: 'Próby', green: 'Poprawna pozycja', yellow: 'Błędna pozycja', gray: 'Nie w kolorze' },
+            ger: { info: 'Errate die Farbe', name: 'GER', button: 'Erraten', keybrd: 'Tastatur', guesses: 'Versuche', green: 'Richtige Position', yellow: 'Falsche Position', gray: 'Nicht in Farbe' }
         };
 
         function addGuessToHistory(userGuess, targetHex, attemptNum, isCorrect) {
-            const userHex = userGuess.substring(1);
+            const userHex = userGuess.substring(1).toUpperCase();
             const history = document.getElementById('guessHistory');
+
+            const result = evaluateGuess(userHex, targetHex);
 
             const entry = document.createElement('div');
             entry.className = 'historyEntry' + (isCorrect ? ' historyCorrect' : '');
@@ -253,10 +292,11 @@ by the Free Software Foundation, either version 3 of the License, or
                 const charSpan = document.createElement('span');
                 charSpan.className = 'historyChar';
                 charSpan.textContent = userHex[i];
-                if (userHex[i] === targetHex[i]) {
+
+                if (result[i] === 'green') {
                     charSpan.style.backgroundColor = '#90EE90';
                     charSpan.style.color = '#0f0a0f';
-                } else if (targetHex.includes(userHex[i])) {
+                } else if (result[i] === 'yellow') {
                     charSpan.style.backgroundColor = '#FFFF00';
                     charSpan.style.color = '#0f0a0f';
                 } else {
@@ -297,7 +337,6 @@ by the Free Software Foundation, either version 3 of the License, or
             showInputColors = true;
             updateInputColors();
 
-
             userGuess = '#' + userGuess;
             attempts++;
             updateAttemptsDisplay();
@@ -307,7 +346,7 @@ by the Free Software Foundation, either version 3 of the License, or
 
             updateKeyboard(userHex, targetHex);
 
-            if (userGuess === targetColor) {
+            if (userGuess.toUpperCase() === targetColor.toUpperCase()) {
                 if(currentLanguage === 'eng') {
                     document.getElementById('info').textContent = `Correct in ${attempts} attempt${attempts > 1 ? 's' : ''}!`;
                 } else if (currentLanguage === 'esp') {
@@ -362,7 +401,6 @@ by the Free Software Foundation, either version 3 of the License, or
             currentLanguage = lang;
             info.textContent = translations[lang].info;
             languageButton.textContent = translations[lang].name;
-            document.getElementById('NewGame').value = translations[lang].again;
             document.getElementById('submit').value = translations[lang].button;
             document.querySelector('.sideTitle').textContent = translations[lang].keybrd;
             document.querySelectorAll('.sideTitle')[1].textContent = translations[lang].guesses;
@@ -393,7 +431,6 @@ by the Free Software Foundation, either version 3 of the License, or
 
         setLanguage('eng');
 
-        // DIFFICULTY
         const difficultySettings = {
             easy:       { attempts: 10, label: 'EASY' },
             normal:     { attempts: 6, label: 'NORMAL' },
@@ -451,6 +488,5 @@ by the Free Software Foundation, either version 3 of the License, or
         difficultyBtn.style.borderColor = difficultyColors[currentDifficulty];
         startGame();
     </script>
-<footer>© 2026 Igor 'x0derek' Karpowicz</footer>
 </body>
 </html>
